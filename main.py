@@ -1,34 +1,40 @@
 """
 Main application layer for Home Security System.
 """
-from time import sleep
-from core.internals import Protector
-from core.observer_eye import ObserverEye
-from core.observer_wifi import ObserverWifi
+from core.observers.subject.eye_subject import EyeSubject
+from core.observers.subject.wifi_subject import WiFiSubject
+from core.observers.observer.hss_observer import HomeSecuritySystemObserver
+from core.strategies.wifi.ipaddress_strategy import IpAddressStrategy
+from core.strategies.eye.camera_strategy import CameraStrategy
+from core.strategies.notifier.whatsapp_strategy import WhatsappStrategy
+from core.utils.datatypes import WhatsappReciever, Protector
 
 
 def main():
     """
     This method is the entry point of the application.
     """
-    # Create the ObserverWifi object.
-    observer_wifi = ObserverWifi()
-    observer_wifi.add_protectors(Protector('GokhaniPhone', '00:00:00:00:00:00'))
+    # Create a Whatsapp notifier.
+    whatsapp_notifier = WhatsappStrategy()
+    whatsapp_notifier.add_reciever(WhatsappReciever("Gokhan", "+905555555555"))
 
-    while True:
-        # Check if unknown visitors are present.
-        is_protector_home = observer_wifi.check_if_protectors_are_present()
+    # Create a Protector within IpAddressStrategy.
+    ip_address_strategy = IpAddressStrategy()
+    ip_address_strategy.add_protector(Protector("Gokhan_iPhone", "192.168.X.X"))
 
-        # If there are unknown visitors, check if there is a person in front of the camera.
-        if not is_protector_home:
-            observer_eye = ObserverEye()
-            any_humans = observer_eye.detect_humans()
+    # Create observer.
+    hss_observer = HomeSecuritySystemObserver()
+    hss_observer.set_notifier(whatsapp_notifier)
 
-            # If there is a person in front of the camera, send a notification.
-            if any_humans:
-                print('Sending notification...')
-        sleep(30)
+    # Create subjects to observe.
+    wifi_subject = WiFiSubject()
+    wifi_subject.attach(hss_observer)
+    eye_subject = EyeSubject()
+    eye_subject.attach(hss_observer)
 
+    # Run subjects.
+    wifi_subject.run(ip_address_strategy)
+    eye_subject.run(CameraStrategy(0))
 
 
 if __name__ == "__main__":
