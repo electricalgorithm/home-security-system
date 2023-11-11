@@ -19,9 +19,7 @@ class CameraStrategy(BaseEyeStrategy):
     The camera strategy for eye strategies.
     """
     def __init__(self, camera_id: int = 0):
-        self._camera = cv2.VideoCapture(camera_id)
-        if not self._camera.isOpened():
-            raise RuntimeError('Could not start camera.')
+        self._camera_id = camera_id 
     
     def check_if_detected(self) -> EyeStrategyResult:
         """This method checks if there are any protectors around."""
@@ -41,8 +39,15 @@ class CameraStrategy(BaseEyeStrategy):
     # Internal methods.
     def _get_frame(self) -> numpy.ndarray:
         """This method returns the frame from the camera."""
+        # Create a camera object.
+        camera = cv2.VideoCapture(self._camera_id)
+        # Set the camera resolution.
+        camera.set(3, 640)
+        camera.set(4, 480)
         # Read the frame from the camera.
-        _, frame = self._camera.read()
+        _, frame = camera.read()
+        # Release the camera.
+        camera.release()
         return frame
 
     def _detect_humans(self, frame: numpy.ndarray) -> tuple[list[tuple[int, int, int, int]], float]:
@@ -54,7 +59,7 @@ class CameraStrategy(BaseEyeStrategy):
             frame,
             winStride=(4, 4),
             padding=(4, 4),
-            scale=1.05
+            scale=1.00
         )
         logger.debug("Number of detections: " + str(num_detections)
                     + " Regions: " + str(regions))
