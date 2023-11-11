@@ -2,7 +2,9 @@
 This module contains the Whatsapp notifier strategy.
 """
 import logging
+
 import requests
+
 from core.utils.datatypes import WhatsappReciever
 from core.strategies.notifier.base_notifier_strategy import BaseNotifierStrategy
 
@@ -24,6 +26,7 @@ class WhatsappStrategy(BaseNotifierStrategy):
 
     def _send_message(self, reciever: WhatsappReciever, message: str) -> bool:
         """Send a WhatsApp message to the user."""
+        logger.debug("Sending WhatsApp message (%s) to %s", message, reciever.telephone_number)
         # Send the request.
         request_url = f"{self.API_URL}?phone={reciever.telephone_number}&text={message}&apikey={reciever.api_key}"
         response = requests.get(request_url, timeout=10)

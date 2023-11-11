@@ -1,11 +1,17 @@
 """
 The Camera strategy for eye strategies.
 """
+import logging
 from datetime import datetime
+
 import cv2
 import numpy
+
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 from core.utils.datatypes import EyeStrategyResult
+
+# Add logging support.
+logger = logging.getLogger(__name__)
 
 
 class CameraStrategy(BaseEyeStrategy):
@@ -50,6 +56,8 @@ class CameraStrategy(BaseEyeStrategy):
             padding=(4, 4),
             scale=1.05
         )
+        logger.debug("Number of detections: " + str(num_detections)
+                    + " Regions: " + str(regions))
         return regions, num_detections
     
     def _outline_the_regions(self, frame: numpy.ndarray, regions: list[tuple[int, int, int, int]]) -> None:

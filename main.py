@@ -1,6 +1,7 @@
 """
 Main application layer for Home Security System.
 """
+import logging
 from core.observers.subject.eye_subject import EyeSubject
 from core.observers.subject.wifi_subject import WiFiSubject
 from core.observers.observer.hss_observer import HomeSecuritySystemObserver
@@ -8,6 +9,16 @@ from core.strategies.wifi.ipaddress_strategy import IpAddressStrategy
 from core.strategies.eye.camera_strategy import CameraStrategy
 from core.strategies.notifier.whatsapp_strategy import WhatsappStrategy
 from core.utils.datatypes import WhatsappReciever, Protector
+
+
+# Add logging support.
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='[%(asctime)s] -- [%(levelname)s] -- %(name)s (%(funcName)s): %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    filename='hss.log',
+    filemode='a',
+)
 
 
 def main():
@@ -29,7 +40,7 @@ def main():
     # Create subjects to observe.
     wifi_subject = WiFiSubject()
     wifi_subject.attach(hss_observer)
-    eye_subject = EyeSubject()
+    eye_subject = EyeSubject("images/")
     eye_subject.attach(hss_observer)
 
     # Run subjects.
