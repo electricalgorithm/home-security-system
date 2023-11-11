@@ -1,6 +1,7 @@
 """
 The Camera strategy for eye strategies.
 """
+from datetime import datetime
 import cv2
 import numpy
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
@@ -19,11 +20,17 @@ class CameraStrategy(BaseEyeStrategy):
     def check_if_detected(self) -> EyeStrategyResult:
         """This method checks if there are any protectors around."""
         # Get the frame from the camera.
-        # frame = self._get_frame()
+        frame = self._get_frame()
         # Detect humans in the frame.
-        # result = self._detect_humans(frame)
-        # return result
-        return EyeStrategyResult(image=None, result=True)
+        regions, num_detections = self._detect_humans(frame)
+        # Outline the regions in the frame.
+        self._outline_the_regions(frame, regions)
+        # Save the frame to the disk.
+        self._save_frame(frame)
+        # If there is a human in the frame, return True.
+        if len(num_detections) > 0:
+            return EyeStrategyResult(image=frame, result=True)
+        return EyeStrategyResult(image=frame, result=False)
 
     # Internal methods.
     def _get_frame(self) -> numpy.ndarray:
@@ -32,7 +39,7 @@ class CameraStrategy(BaseEyeStrategy):
         _, frame = self._camera.read()
         return frame
 
-    def _detect_humans(self, frame: numpy.ndarray) -> EyeStrategyResult:
+    def _detect_humans(self, frame: numpy.ndarray) -> tuple[list[tuple[int, int, int, int]], float]:
         """This method checks if there is a person in front of the camera."""
         # Detect humans in the frame.
         hog_detector = cv2.HOGDescriptor()
@@ -43,18 +50,16 @@ class CameraStrategy(BaseEyeStrategy):
             padding=(4, 4),
             scale=1.05
         )
-
-        # Draw rectangles around the detected humans.
+        return regions, num_detections
+    
+    def _outline_the_regions(self, frame: numpy.ndarray, regions: list[tuple[int, int, int, int]]) -> None:
+        """This method outlines the regions in the frame."""
         for (x, y, w, h) in regions:
             cv2.rectangle(frame, (x, y),  (x + w, y + h),  (0, 0, 255), 2)
-
-        # Showing the output Image
-        cv2.imshow("Image", frame)
-        cv2.waitKey(0)
-
-        cv2.destroyAllWindows()
-
-        # If there is a face in the frame, return True.
-        if len(num_detections) > 0:
-            return EyeStrategyResult(image=frame, result=True)
-        return EyeStrategyResult(image=frame, result=False)
+ 
+    def _save_frame(self, frame: numpy.ndarray) -> None:
+        """This method saves the frame to the disk."""
+        # Get current date and time.
+        current_date_time = datetime.now()
+        # Save the frame.
+        cv2.imwrite(f"frame_{current_date_time}.jpg", frame)
