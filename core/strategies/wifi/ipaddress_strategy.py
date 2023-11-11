@@ -5,6 +5,7 @@ from core.utils.program_launcher import run_program, PingCommands
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
 from core.utils.datatypes import WiFiStrategyResult
 
+
 class IpAddressStrategy(BaseWiFiStrategy):
     """
     The strategy which searches for IP addresses.
