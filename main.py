@@ -8,6 +8,7 @@ from core.observers.observer.hss_observer import HomeSecuritySystemObserver
 from core.strategies.wifi.ipaddress_strategy import IpAddressStrategy
 from core.strategies.eye.camera_strategy import CameraStrategy
 from core.strategies.notifier.whatsapp_strategy import WhatsappStrategy
+from core.strategies.detectors.hog_descriptor_strategy import HogDescriptorStrategy
 from core.utils.datatypes import WhatsappReciever, Protector
 
 
@@ -25,13 +26,13 @@ def main():
     """
     This method is the entry point of the application.
     """
-    # Create a Whatsapp notifier.
+    # Create a WhatsApp notifier.
     whatsapp_notifier = WhatsappStrategy()
-    whatsapp_notifier.add_reciever(WhatsappReciever("Gokhan", "+905555555555"))
+    whatsapp_notifier.add_reciever(WhatsappReciever("Gokhan", "+90555555555", "xxxxxx"))
 
     # Create a Protector within IpAddressStrategy.
     ip_address_strategy = IpAddressStrategy()
-    ip_address_strategy.add_protector(Protector("Gokhan_iPhone", "192.168.X.X"))
+    ip_address_strategy.add_protector(Protector("Gokhan_iPhone", "192.168.1.65"))
 
     # Create observer.
     hss_observer = HomeSecuritySystemObserver()
@@ -45,7 +46,9 @@ def main():
 
     # Run subjects.
     wifi_subject.run(ip_address_strategy)
-    eye_subject.run(CameraStrategy(0))
+    camera = CameraStrategy(0)
+    camera.set_detector(HogDescriptorStrategy())
+    eye_subject.run(camera)
 
 
 if __name__ == "__main__":
