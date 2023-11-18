@@ -6,7 +6,8 @@ from core.observers.subject.eye_subject import EyeSubject
 from core.observers.subject.wifi_subject import WiFiSubject
 from core.observers.observer.hss_observer import HomeSecuritySystemObserver
 from core.strategies.wifi.ipaddress_strategy import IpAddressStrategy
-from core.strategies.eye.camera_strategy import CameraStrategy
+from core.strategies.eye.usbcamera_strategy import UsbCameraStrategy
+from core.strategies.eye.picamera_strategy import PiCameraStrategy
 from core.strategies.notifier.whatsapp_strategy import WhatsappStrategy
 from core.strategies.detectors.hog_descriptor_strategy import HogDescriptorStrategy
 from core.utils.datatypes import WhatsappReciever, Protector
@@ -28,11 +29,11 @@ def main():
     """
     # Create a WhatsApp notifier.
     whatsapp_notifier = WhatsappStrategy()
-    whatsapp_notifier.add_reciever(WhatsappReciever("Gokhan", "+90555555555", "xxxxxx"))
+    whatsapp_notifier.add_reciever(WhatsappReciever("Gokhan", "tel_no", "api_key"))
 
     # Create a Protector within IpAddressStrategy.
     ip_address_strategy = IpAddressStrategy()
-    ip_address_strategy.add_protector(Protector("Gokhan_iPhone", "192.168.1.65"))
+    ip_address_strategy.add_protector(Protector("Gokhan_iPhone", "tel_ip"))
 
     # Create observer.
     hss_observer = HomeSecuritySystemObserver()
@@ -46,7 +47,7 @@ def main():
 
     # Run subjects.
     wifi_subject.run(ip_address_strategy)
-    camera = CameraStrategy(0)
+    camera = PiCameraStrategy()
     camera.set_detector(HogDescriptorStrategy())
     eye_subject.run(camera)
 
