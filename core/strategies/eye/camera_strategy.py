@@ -7,7 +7,7 @@ from datetime import datetime
 import cv2
 import numpy
 
-from core.strategies.detectors.base_detector_strategy import BaseDetectorStrategy, DetectorResult
+from core.strategies.detectors.base_detector_strategy import BaseDetectorStrategy
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 from core.utils.datatypes import EyeStrategyResult
 
