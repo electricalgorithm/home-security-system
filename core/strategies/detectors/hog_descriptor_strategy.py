@@ -16,8 +16,9 @@ class HogDescriptorStrategy(BaseDetectorStrategy):
         # Detect humans in the frame.
         hog_detector = cv2.HOGDescriptor()
         hog_detector.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         regions, num_detections = hog_detector.detectMultiScale(
-            frame,
+            grey,
             winStride=(2, 2),
             padding=(4, 4),
             scale=1.03,
