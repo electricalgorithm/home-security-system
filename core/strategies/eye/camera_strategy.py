@@ -7,6 +7,7 @@ from datetime import datetime
 import cv2
 import numpy
 
+from core.strategies.detectors.base_detector_strategy import BaseDetectorStrategy, DetectorResult
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 from core.utils.datatypes import EyeStrategyResult
 
@@ -19,20 +20,30 @@ class CameraStrategy(BaseEyeStrategy):
     The camera strategy for eye strategies.
     """
     def __init__(self, camera_id: int = 0):
-        self._camera_id = camera_id 
+        self._camera_id = camera_id
+        self._detector = None
+
+    # Interface methods.
+    def set_detector(self, detector: BaseDetectorStrategy) -> None:
+        """This method sets the detector strategy."""
+        self._detector = detector
+
+    def get_detector(self) -> BaseDetectorStrategy:
+        """This method returns the detector strategy."""
+        return self._detector
     
     def check_if_detected(self) -> EyeStrategyResult:
         """This method checks if there are any protectors around."""
         # Get the frame from the camera.
         frame = self._get_frame()
         # Detect humans in the frame.
-        regions, num_detections = self._detect_humans(frame)
+        result = self._detect_humans(frame)
         # Outline the regions in the frame.
-        self._outline_the_regions(frame, regions)
+        # self._outline_the_regions(frame, regions)
         # Save the frame to the disk.
-        self._save_frame(frame)
+        # self._save_frame(frame)
         # If there is a human in the frame, return True.
-        if len(num_detections) > 0:
+        if result.human_found:
             return EyeStrategyResult(image=frame, result=True)
         return EyeStrategyResult(image=frame, result=False)
 
@@ -49,21 +60,6 @@ class CameraStrategy(BaseEyeStrategy):
         # Release the camera.
         camera.release()
         return frame
-
-    def _detect_humans(self, frame: numpy.ndarray) -> tuple[list[tuple[int, int, int, int]], float]:
-        """This method checks if there is a person in front of the camera."""
-        # Detect humans in the frame.
-        hog_detector = cv2.HOGDescriptor()
-        hog_detector.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
-        regions, num_detections = hog_detector.detectMultiScale(
-            frame,
-            winStride=(4, 4),
-            padding=(4, 4),
-            scale=1.00
-        )
-        logger.debug("Number of detections: " + str(num_detections)
-                    + " Regions: " + str(regions))
-        return regions, num_detections
     
     def _outline_the_regions(self, frame: numpy.ndarray, regions: list[tuple[int, int, int, int]]) -> None:
         """This method outlines the regions in the frame."""
