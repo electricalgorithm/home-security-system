@@ -2,14 +2,17 @@
 This class inherits from IBaseSubject.
 Concretes a subject for Eye/Camera features.
 """
+import os
 import logging
 from datetime import datetime
 from time import sleep
-from threading import Thread
+from threading import Thread, Lock
+from typing import Optional
 
 import cv2
 
 from core.utils.datatypes import EyeStates, EyeStrategyResult
+from core.utils.fileio_adaptor import upload_to_fileio
 from core.observers.subject.base_subject import BaseSubject
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 
@@ -22,37 +25,61 @@ class EyeSubject(BaseSubject):
     This class inherits from IBaseSubject.
     Concretes a subject for Eye/Camera features.
     """
+    DEFAULT_IMAGE_LOCATIONS: str = "~/.home-security-system/images"
     DEFAULT_SLEEP_INTERVAL = 10
     SLEEP_INTERVAL_DETECTED = 5
 
-    def __init__(self, image_path: str):
+    def __init__(self, image_path: str = DEFAULT_IMAGE_LOCATIONS):
         super().__init__()
-        self._image_path = image_path
+        self._image_path = (
+            image_path
+            if '~' not in image_path
+            else os.path.expanduser(image_path)
+        )
+        
+        # Create the default image directory if not exists.
+        os.makedirs(self._image_path, exist_ok=True)
 
     @staticmethod
     def get_default_state() -> EyeStates:
         """This method is called when the observer is updated."""
         return EyeStates.UNREACHABLE
 
-    def run(self, eye_strategy: BaseEyeStrategy) -> None:
+    def run(self,
+            eye_strategy: BaseEyeStrategy,
+            wifi_lock: Optional[Lock] = None
+            ) -> None:
         """This method is called when the observer is updated."""
-        thread = Thread(target=self._run_in_loop, args=(self, eye_strategy,))
+        thread = Thread(target=self._run_in_loop, args=(self, eye_strategy, wifi_lock))
         thread.start()
         logger.debug("EyeSubject is running...")
 
     @staticmethod
-    def _run_in_loop(self, eye_strategy: BaseEyeStrategy) -> None:
+    def _run_in_loop(self,
+                     eye_strategy: BaseEyeStrategy,
+                     wifi_lock: Optional[Lock] = None
+                     ) -> None:
         """This method is called when the observer is updated."""
         sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
 
-        while True:
-            result = eye_strategy.check_if_detected()
-            logger.debug("EyeStrategyResult: " + str(result.result))
+        # Create a dummy lock instance if not given.
+        if wifi_lock is None:
+            wifi_lock = Lock()
 
-            if result.result:
-                self.set_state(EyeStates.DETECTED)
-                self._save_image(result)
-                sleep_interval = EyeSubject.SLEEP_INTERVAL_DETECTED
+        while True:
+            # If WiFi subject would give rights to use camera,
+            # Check if any intruders detected.
+            if not wifi_lock.locked():
+                result = eye_strategy.check_if_detected()
+                logger.debug("EyeStrategyResult: " + str(result.result))
+
+                if result.result:
+                    self.set_state(EyeStates.DETECTED)
+                    self._save_image(result)
+                    sleep_interval = EyeSubject.SLEEP_INTERVAL_DETECTED
+            
+            # If the WiFi subject does not give rights,
+            # aka: "There is protectors around the house."
             else:
                 self.set_state(EyeStates.NOT_DETECTED)
                 sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL

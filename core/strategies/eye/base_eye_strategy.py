@@ -34,8 +34,4 @@ class BaseEyeStrategy(metaclass=ABCMeta):
         frame = self.get_frame()
         # Detect humans in the frame.
         result = self._detect_humans(frame)
-
-        if result.human_found:
-            return EyeStrategyResult(image=frame, result=True)
-        return EyeStrategyResult(image=frame, result=False)
-
+        return EyeStrategyResult(image=result.image, result=result.human_found)

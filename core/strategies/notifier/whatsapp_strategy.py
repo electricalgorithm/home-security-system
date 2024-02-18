@@ -32,7 +32,7 @@ class WhatsappStrategy(BaseNotifierStrategy):
         response = requests.get(request_url, timeout=10)
 
         # Check if the request was unsuccessful.
-        if response.status_code != 200:
+        if response.status_code != 200 or "ERROR" in response.text:
             logger.error("Failed to send WhatsApp message to %s", reciever.telephone_number)
             logger.error("Status code: %s", response.status_code)
             return False
