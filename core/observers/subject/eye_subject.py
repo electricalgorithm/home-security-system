@@ -5,7 +5,8 @@ Concretes a subject for Eye/Camera features.
 import logging
 from datetime import datetime
 from time import sleep
-from threading import Thread
+from threading import Thread, Lock
+from typing import Optional
 
 import cv2
 
@@ -34,25 +35,42 @@ class EyeSubject(BaseSubject):
         """This method is called when the observer is updated."""
         return EyeStates.UNREACHABLE
 
-    def run(self, eye_strategy: BaseEyeStrategy) -> None:
+    def run(self,
+            eye_strategy: BaseEyeStrategy,
+            wifi_lock: Optional[Lock] = None
+            ) -> None:
         """This method is called when the observer is updated."""
-        thread = Thread(target=self._run_in_loop, args=(self, eye_strategy,))
+        thread = Thread(target=self._run_in_loop, args=(self, eye_strategy, wifi_lock))
         thread.start()
         logger.debug("EyeSubject is running...")
 
     @staticmethod
-    def _run_in_loop(self, eye_strategy: BaseEyeStrategy) -> None:
+    def _run_in_loop(self,
+                     eye_strategy: BaseEyeStrategy,
+                     wifi_lock: Optional[Lock] = None
+                     ) -> None:
         """This method is called when the observer is updated."""
         sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
 
-        while True:
-            result = eye_strategy.check_if_detected()
-            logger.debug("EyeStrategyResult: " + str(result.result))
+        # Create a dummy lock instance if not given.
+        if wifi_lock is None:
+            wifi_lock = Lock()
 
-            if result.result:
-                self.set_state(EyeStates.DETECTED)
-                self._save_image(result)
-                sleep_interval = EyeSubject.SLEEP_INTERVAL_DETECTED
+        while True:
+            print(f"Lock status: {wifi_lock.locked()}")
+            # If WiFi subject would give rights to use camera,
+            # Check if any intruders detected.
+            if not wifi_lock.locked():
+                result = eye_strategy.check_if_detected()
+                logger.debug("EyeStrategyResult: " + str(result.result))
+
+                if result.result:
+                    self.set_state(EyeStates.DETECTED)
+                    self._save_image(result)
+                    sleep_interval = EyeSubject.SLEEP_INTERVAL_DETECTED
+            
+            # If the WiFi subject does not give rights,
+            # aka: "There is protectors around the house."
             else:
                 self.set_state(EyeStates.NOT_DETECTED)
                 sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
