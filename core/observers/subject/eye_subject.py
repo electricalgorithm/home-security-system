@@ -2,6 +2,7 @@
 This class inherits from IBaseSubject.
 Concretes a subject for Eye/Camera features.
 """
+import os
 import logging
 from datetime import datetime
 from time import sleep
@@ -11,6 +12,7 @@ from typing import Optional
 import cv2
 
 from core.utils.datatypes import EyeStates, EyeStrategyResult
+from core.utils.fileio_adaptor import upload_to_fileio
 from core.observers.subject.base_subject import BaseSubject
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 
@@ -23,12 +25,20 @@ class EyeSubject(BaseSubject):
     This class inherits from IBaseSubject.
     Concretes a subject for Eye/Camera features.
     """
+    DEFAULT_IMAGE_LOCATIONS: str = "~/.home-security-system/images"
     DEFAULT_SLEEP_INTERVAL = 10
     SLEEP_INTERVAL_DETECTED = 5
 
-    def __init__(self, image_path: str):
+    def __init__(self, image_path: str = DEFAULT_IMAGE_LOCATIONS):
         super().__init__()
-        self._image_path = image_path
+        self._image_path = (
+            image_path
+            if '~' not in image_path
+            else os.path.expanduser(image_path)
+        )
+        
+        # Create the default image directory if not exists.
+        os.makedirs(self._image_path, exist_ok=True)
 
     @staticmethod
     def get_default_state() -> EyeStates:
