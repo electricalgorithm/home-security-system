@@ -7,6 +7,7 @@ from core.observers.subject.base_subject import BaseSubject
 from core.observers.subject.wifi_subject import WiFiSubject
 from core.observers.subject.eye_subject import EyeSubject
 from core.utils.datatypes import EyeStates, WiFiStates
+from core.utils.fileio_adaptor import upload_to_fileio, read_latest_file
 from core.strategies.notifier.base_notifier_strategy import BaseNotifierStrategy
 
 # Add logging support.
@@ -34,7 +35,10 @@ class HomeSecuritySystemObserver(BaseObserver):
 
         if self.wifi_state == WiFiStates.DISCONNECTED and self.eye_state == EyeStates.DETECTED:
             logger.info("There is an intruder!")
-            self._notifier.notify_all("There is an intruder!")
+            fileio_link = upload_to_fileio(
+                read_latest_file("~/.home-security-system/images")
+            )
+            self._notifier.notify_all(f"There is an intruder! Here is the image: {fileio_link}.")
         
     def set_notifier(self, notifier: BaseNotifierStrategy) -> None:
         """This method is called when the observer is updated."""
