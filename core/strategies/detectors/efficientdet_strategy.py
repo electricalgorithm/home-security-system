@@ -73,7 +73,7 @@ class EfficientdetStrategy(BaseDetectorStrategy):
                 cv2.rectangle(image, (min_x, min_y), (max_x, max_y), (0, 255, 0), 2)         
 
         result = DetectorResult(
-            image=frame,
+            image=image,
             human_found=len(detection_regions) > 0,
             regions=detection_regions,
             num_detections=len(detection_regions),
