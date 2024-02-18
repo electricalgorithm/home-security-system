@@ -56,10 +56,8 @@ class WiFiSubject(BaseSubject):
                 self.set_state(WiFiStates.CONNECTED)
                 if not protector_lock.locked():
                     protector_lock.acquire()
-                print("Lock acquired.")
             else:
                 self.set_state(WiFiStates.DISCONNECTED)
                 if protector_lock.locked():
                     protector_lock.release()
-                print("Lock released.")
             sleep(5)

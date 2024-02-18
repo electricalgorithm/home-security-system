@@ -57,7 +57,6 @@ class EyeSubject(BaseSubject):
             wifi_lock = Lock()
 
         while True:
-            print(f"Lock status: {wifi_lock.locked()}")
             # If WiFi subject would give rights to use camera,
             # Check if any intruders detected.
             if not wifi_lock.locked():

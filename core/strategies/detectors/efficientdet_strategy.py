@@ -71,9 +71,6 @@ class EfficientdetStrategy(BaseDetectorStrategy):
                 detection_regions.append((min_x, max_x, min_y, max_y))
                 
                 cv2.rectangle(image, (min_x, min_y), (max_x, max_y), (0, 255, 0), 2)         
-        
-        print(f"Intruder: {len(detection_regions) > 0}")
-        print(f"Number of Intruder: {len(detection_regions)}")
 
         result = DetectorResult(
             image=frame,
