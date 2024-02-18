@@ -10,6 +10,7 @@ This project is a home security system that uses a Raspberry Pi and a camera, wh
 ### Installation
 
 ```bash
+$ sudo apt install -y python3-picamera2
 $ virtualenv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
