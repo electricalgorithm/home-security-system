@@ -17,5 +17,31 @@ $ pip install -r requirements.txt
 $ python main.py
 ```
 
+Create a `.config.json` file in the root directory with the following content:
+
+```json
+{
+    "main_settings": {
+        "recievers": [
+            {
+                "name": "[RECEIVER NAME 1]",
+                "tel_no": "[RECEIVER TEL NO 1]",
+                "callmebot_key": "[CALLMEBOT_KEY 1]"
+            }
+        ],
+        "protectors": [
+            {
+                "name": "[PROTECTOR NAME 1]",
+                "address": "[PROTECTOR MAC/IP ADDR 1]"
+            }
+        ]
+    },
+    "strategy_settings": {
+        [...IF NEEDED]
+    },
+    "file_io_key": "[FILE_IO_KEY]"
+}
+```
+
 ### Advice
 You can use service file provided to run the script with systemd. It would make it run on startup, and restart it if it crashes.
