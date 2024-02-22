@@ -15,7 +15,7 @@ class EfficientdetStrategy(BaseDetectorStrategy):
     """
     MODEL_PATH: str = "models/efficientdet_1.tflite"
     LABEL_PATH: str = "models/efficientdet_1_labelmap.txt"
-    DETECTION_THRES: float = 0.35
+    DETECTION_THRES: float = 0.65
     
     @classmethod
     def detect_humans(cls, frame: numpy.ndarray) -> DetectorResult:
