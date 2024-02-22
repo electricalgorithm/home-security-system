@@ -1,0 +1,14 @@
+[Unit]
+Description=Home Security System
+After=network.target
+
+[Service]
+ExecStart=/home/raspberry/home-security-system/.hss_venv/bin/python /home/raspberry/home-security-system/main.py
+Restart=always
+User=raspberry
+WorkingDirectory=/home/raspberry/home-security-system/
+ExecStartPre=/bin/sleep 30
+RestartSec=30
+
+[Install]
+WantedBy=default.target
