@@ -35,6 +35,7 @@ class WhatsappStrategy(BaseNotifierStrategy):
         if response.status_code != 200 or "ERROR" in response.text:
             logger.error("Failed to send WhatsApp message to %s", reciever.telephone_number)
             logger.error("Status code: %s", response.status_code)
+            logger.error("ERROR in response: %s", "ERROR" in response.text)
             return False
 
         # Log the success.

@@ -4,6 +4,10 @@ from requests.auth import HTTPBasicAuth
 import os
 import glob
 import json
+from time import sleep
+from core.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 def read_latest_file(dir_path: str) -> str:
     """This method reads the latest file from the given directory."""
@@ -16,7 +20,13 @@ def read_latest_file(dir_path: str) -> str:
         raise FileNotFoundError(f"The given directory path does not exist: {dir_path}")
     
     # Get the latest file.
-    list_of_files = glob.glob(dir_path + '/*')
+    while True:
+        list_of_files = glob.glob(dir_path + '/*')
+        if len(list_of_files) == 0:
+            # Wait for save operation to complete.
+            sleep(2)
+        else:
+            break
     return max(list_of_files, key=os.path.getctime)
 
 def upload_to_fileio(file_path: str) -> str:
@@ -30,6 +40,9 @@ def upload_to_fileio(file_path: str) -> str:
         files={"file": open(file_path, 'rb')},
         auth=HTTPBasicAuth(file_io_key, '')
     )
+    
+    logger.debug("File.io response: " + str(response.status_code))
+
     res: dict[str, Any] = response.json()
     if res['success'] == True: 
         return res['link']
