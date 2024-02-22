@@ -27,8 +27,8 @@ class EyeSubject(BaseSubject):
     Concretes a subject for Eye/Camera features.
     """
     DEFAULT_IMAGE_LOCATIONS: str = "~/.home-security-system/images"
-    DEFAULT_SLEEP_INTERVAL = 30
-    SLEEP_INTERVAL_DETECTED = 5
+    DEFAULT_SLEEP_INTERVAL = 10
+    SLEEP_INTERVAL_DETECTED = 2
 
     def __init__(self, image_path: str = DEFAULT_IMAGE_LOCATIONS):
         super().__init__()
@@ -75,20 +75,27 @@ class EyeSubject(BaseSubject):
                 logger.debug("EyeStrategyResult: " + str(result.result))
 
                 if result.result:
-                    self.set_state(EyeStates.DETECTED)
+                    logger.debug("Changing state to DETECTED...")
                     self._save_image(result)
+                    self.set_state(EyeStates.DETECTED)
                     sleep_interval = EyeSubject.SLEEP_INTERVAL_DETECTED
+                else:
+                    logger.debug("Changing state to NOT_DETECTED...")
+                    self.set_state(EyeStates.NOT_DETECTED)
+                    sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
             
             # If the WiFi subject does not give rights,
             # aka: "There is protectors around the house."
             else:
-                self.set_state(EyeStates.NOT_DETECTED)
+                logger.debug("Changing state to UNREACHABLE...")
+                self.set_state(EyeStates.UNREACHABLE)
                 sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
 
             sleep(sleep_interval)
     
     def _save_image(self, result: EyeStrategyResult) -> None:
         """This method is called when the observer is updated."""
+        logger.debug("Saving image to the disk...")
         time_now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
         file_location = f"{self._image_path}/intruder_{time_now}.jpg"
         cv2.imwrite(file_location, result.image)
