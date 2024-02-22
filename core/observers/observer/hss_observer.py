@@ -1,7 +1,7 @@
 """
 The observer for Home Security System.
 """
-import logging
+from core.utils.logger import get_logger
 from core.observers.observer.base_observer import BaseObserver
 from core.observers.subject.base_subject import BaseSubject
 from core.observers.subject.wifi_subject import WiFiSubject
@@ -11,7 +11,7 @@ from core.utils.fileio_adaptor import upload_to_fileio, read_latest_file
 from core.strategies.notifier.base_notifier_strategy import BaseNotifierStrategy
 
 # Add logging support.
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class HomeSecuritySystemObserver(BaseObserver):

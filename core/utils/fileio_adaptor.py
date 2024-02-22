@@ -3,6 +3,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 import os
 import glob
+import json
 
 def read_latest_file(dir_path: str) -> str:
     """This method reads the latest file from the given directory."""
@@ -20,10 +21,14 @@ def read_latest_file(dir_path: str) -> str:
 
 def upload_to_fileio(file_path: str) -> str:
     """Uploads a image file to File.io server."""
+    with open(".config.json", "r") as file:
+        _config = json.load(file)
+    file_io_key = _config['file_io_key']
+
     response = requests.post(
         'https://file.io/',
         files={"file": open(file_path, 'rb')},
-        auth=HTTPBasicAuth("API_KEY_HERE", '')
+        auth=HTTPBasicAuth(file_io_key, '')
     )
     res: dict[str, Any] = response.json()
     if res['success'] == True: 

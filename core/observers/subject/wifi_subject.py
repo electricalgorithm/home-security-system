@@ -2,7 +2,7 @@
 This class inherits from IBaseSubject.
 Concretes a subject WiFi features.
 """
-import logging
+from core.utils.logger import get_logger
 from threading import Thread, Lock
 from time import sleep
 from typing import Optional
@@ -12,7 +12,7 @@ from core.observers.subject.base_subject import BaseSubject
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
 
 # Add logging support.
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class WiFiSubject(BaseSubject):
