@@ -18,8 +18,8 @@ class BaseWiFiStrategy(metaclass=ABCMeta):
         if isinstance(protector, list):
             self.protectors.extend(protector)
         else:
-            self.protectors.append(protector)        
-        
+            self.protectors.append(protector)
+
     def remove_protector(self, protector: Protector | list[Protector]) -> None:
         """This method removes a protector from the list of protectors."""
         if isinstance(protector, list):

@@ -22,7 +22,7 @@ class WiFiSubject(BaseSubject):
     """
     SINGLETON_LOCK: Optional[Lock] = None
     CHECK_INTERVAL: int = 5
-    
+
     @staticmethod
     def get_default_state() -> WiFiStates:
         """This method is called when the observer is updated."""
@@ -33,7 +33,7 @@ class WiFiSubject(BaseSubject):
         thread = Thread(target=self._run_in_loop, args=(wifi_strategy,))
         thread.start()
         logger.debug("WiFiSubject is running...")
-        
+
     @classmethod
     def get_protector_lock(cls) -> Lock:
         """This method returns a Lock object where it can be

@@ -19,7 +19,7 @@ class BaseSubject(metaclass=ABCMeta):
     def attach(self, observer: BaseObserver) -> None:
         """This method is called when the observer is updated."""
         self._observers.append(observer)
-    
+
     def detach(self, observer: BaseObserver) -> None:
         """This method is called when the observer is updated."""
         self._observers.remove(observer)
@@ -32,7 +32,7 @@ class BaseSubject(metaclass=ABCMeta):
     def get_state(self) -> ObserverStates:
         """This method is called when the observer is updated."""
         return self._current_state
-    
+
     def set_state(self, state: ObserverStates) -> None:
         """This method is called when the observer is updated."""
         self._current_state = state

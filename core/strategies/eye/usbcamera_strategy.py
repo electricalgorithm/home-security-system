@@ -37,7 +37,7 @@ class UsbCameraStrategy(BaseEyeStrategy):
         # Set the camera resolution.
         camera.set(3, 640)
         camera.set(4, 480)
-        # Read the frame from the camera.
+        #  Read the frame from the camera.
         _, frame = camera.read()
         # Release the camera.
         camera.release()

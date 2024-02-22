@@ -12,6 +12,7 @@ from core.strategies.notifier.whatsapp_strategy import WhatsappStrategy
 from core.strategies.detectors.efficientdet_strategy import EfficientdetStrategy
 from core.utils.datatypes import WhatsappReciever, Protector
 
+
 def read_configurations() -> dict[str, Any]:
     """
     This method reads the configurations from the .config.json file.
@@ -20,14 +21,15 @@ def read_configurations() -> dict[str, Any]:
         _config = json.load(file)
     main_settings = _config['main_settings']
     strategy_settings = _config['strategy_settings']
-    
+
     return main_settings, strategy_settings
+
 
 def main():
     """
     This method is the entry point of the application.
     """
-    # Read configurations. 
+    # Read configurations.
     config, strategy_config = read_configurations()
     # Create a WhatsApp notifier.
     whatsapp_notifier = WhatsappStrategy()
@@ -46,7 +48,7 @@ def main():
     hss_observer = HomeSecuritySystemObserver()
     hss_observer.set_notifier(whatsapp_notifier)
 
-    # Create subjects to observe.
+    #  Create subjects to observe.
     wifi_subject = WiFiSubject()
     wifi_subject.attach(hss_observer)
     eye_subject = EyeSubject()
@@ -54,7 +56,7 @@ def main():
 
     # Run subjects.
     wifi_subject.run(ip_address_strategy)
-    
+
     # Set-up the camera to detect humans.
     camera = PiCameraStrategy()
     camera.set_detector(EfficientdetStrategy())

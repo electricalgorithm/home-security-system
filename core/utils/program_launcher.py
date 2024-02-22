@@ -12,7 +12,8 @@ class ICommand(StrEnum):
 class ArpScanCommands(ICommand):
     GET_VERSION_INFO = "sudo arp-scan --version"
     INSTALL_PROGRAM = "sudo apt-get install arp-scan"
-    GET_CONNECTED_MAC_ADDRESSES = "sudo arp-scan --localnet | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'"
+    GET_CONNECTED_MAC_ADDRESSES = "sudo arp-scan --localnet "\
+        "| grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'"
 
 
 class PingCommands(ICommand):
@@ -29,7 +30,7 @@ def run_program(command: ICommand) -> str:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     ).communicate()
-    # Check if there was an error.
+    #  Check if there was an error.
     if error:
         raise RuntimeError(error)
 

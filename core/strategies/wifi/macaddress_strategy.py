@@ -34,7 +34,7 @@ class MacAddressStrategy(BaseWiFiStrategy):
                 return WiFiStrategyResult(protector, True)
         logger.debug("No protectors found.")
         return WiFiStrategyResult(None, False)
-    
+
     # Internal methods
     def _get_all_connected(self) -> list[ConnectedDeviceResult]:
         """This method returns a list of addresses of the clients connected to the network."""
