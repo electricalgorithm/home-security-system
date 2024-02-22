@@ -21,6 +21,7 @@ class WiFiSubject(BaseSubject):
     Concretes a subject for WiFiS features.
     """
     SINGLETON_LOCK: Optional[Lock] = None
+    CHECK_INTERVAL: int = 5
     
     @staticmethod
     def get_default_state() -> WiFiStates:
@@ -29,7 +30,7 @@ class WiFiSubject(BaseSubject):
 
     def run(self, wifi_strategy: BaseWiFiStrategy) -> None:
         """This method is called when the observer is updated."""
-        thread = Thread(target=self._run_in_loop, args=(self, wifi_strategy,))
+        thread = Thread(target=self._run_in_loop, args=(wifi_strategy,))
         thread.start()
         logger.debug("WiFiSubject is running...")
         
@@ -43,7 +44,6 @@ class WiFiSubject(BaseSubject):
             cls.SINGLETON_LOCK = Lock()
         return cls.SINGLETON_LOCK
 
-    @staticmethod
     def _run_in_loop(self, wifi_strategy: BaseWiFiStrategy) -> None:
         """This method is called when the observer is updated."""
         protector_lock: Lock = self.get_protector_lock()
@@ -60,4 +60,4 @@ class WiFiSubject(BaseSubject):
                 self.set_state(WiFiStates.DISCONNECTED)
                 if protector_lock.locked():
                     protector_lock.release()
-            sleep(5)
+            sleep(self.CHECK_INTERVAL)
