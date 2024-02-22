@@ -1,9 +1,8 @@
 """
 The Camera strategy for eye strategies.
 """
-import logging
+from core.utils.logger import get_logger
 
-import cv2
 import numpy
 from picamera2 import Picamera2
 
@@ -11,7 +10,7 @@ from core.strategies.detectors.base_detector_strategy import BaseDetectorStrateg
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 
 # Add logging support.
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class PiCameraStrategy(BaseEyeStrategy):

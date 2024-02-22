@@ -1,13 +1,13 @@
 """
 The strategy which searches for IP addresses.
 """
-import logging
+from core.utils.logger import get_logger
 from core.utils.program_launcher import run_program, PingCommands
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
 from core.utils.datatypes import WiFiStrategyResult
 
 # Add logging support.
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class IpAddressStrategy(BaseWiFiStrategy):

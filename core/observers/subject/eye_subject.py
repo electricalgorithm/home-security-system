@@ -11,13 +11,14 @@ from typing import Optional
 
 import cv2
 
+from core.utils.logger import get_logger
 from core.utils.datatypes import EyeStates, EyeStrategyResult
 from core.utils.fileio_adaptor import upload_to_fileio
 from core.observers.subject.base_subject import BaseSubject
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 
 # Add logging support.
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class EyeSubject(BaseSubject):
@@ -26,7 +27,7 @@ class EyeSubject(BaseSubject):
     Concretes a subject for Eye/Camera features.
     """
     DEFAULT_IMAGE_LOCATIONS: str = "~/.home-security-system/images"
-    DEFAULT_SLEEP_INTERVAL = 10
+    DEFAULT_SLEEP_INTERVAL = 30
     SLEEP_INTERVAL_DETECTED = 5
 
     def __init__(self, image_path: str = DEFAULT_IMAGE_LOCATIONS):
