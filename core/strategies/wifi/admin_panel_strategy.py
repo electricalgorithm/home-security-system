@@ -1,10 +1,12 @@
 """
 The strategy which searches for MAC addresses using Admin Panel.
 """
-from core.utils.logger import get_logger
+from typing import Any
+
 from bs4 import BeautifulSoup
 import requests
-from typing import Any
+
+from core.utils.logger import get_logger
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
 from core.utils.datatypes import WiFiStrategyResult, ConnectedDeviceResult
 
@@ -27,7 +29,7 @@ class AdminPanelStrategy(BaseWiFiStrategy):
         for protector in self.protectors:
             # Check if the protector is connected to the network.
             if protector.address in [device.address for device in self._get_all_connected()]:
-                logger.debug("Protector found: " + protector.name)
+                logger.debug("Protector found: %s", protector.name)
                 return WiFiStrategyResult(protector, True)
         logger.debug("No protectors found.")
         return WiFiStrategyResult(None, False)
@@ -62,5 +64,5 @@ class AdminPanelStrategy(BaseWiFiStrategy):
         ]
         session.close()
 
-        logger.debug("Connected devices: " + str(mac_addrs))
+        logger.debug("Connected devices: %s", str(mac_addrs))
         return [ConnectedDeviceResult(mac_addr.upper()) for mac_addr in mac_addrs]

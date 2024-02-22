@@ -2,11 +2,10 @@
 This class inherits from IBaseSubject.
 Concretes a subject WiFi features.
 """
-from core.utils.logger import get_logger
 from threading import Thread, Lock
 from time import sleep
-from typing import Optional
 
+from core.utils.logger import get_logger
 from core.utils.datatypes import WiFiStates
 from core.observers.subject.base_subject import BaseSubject
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
@@ -20,7 +19,7 @@ class WiFiSubject(BaseSubject):
     This class inherits from IBaseSubject.
     Concretes a subject for WiFiS features.
     """
-    SINGLETON_LOCK: Optional[Lock] = None
+    SINGLETON_LOCK: Lock | None = None
     CHECK_INTERVAL: int = 5
 
     @staticmethod
@@ -50,7 +49,7 @@ class WiFiSubject(BaseSubject):
 
         while True:
             protectors = wifi_strategy.check_protectors()
-            logger.debug("Protectors: " + str(protectors.result) + " " + str(protectors.protector))
+            logger.debug("Protectors: %s %s", str(protectors.result), str(protectors.protector))
 
             if protectors.result:
                 self.set_state(WiFiStates.CONNECTED)

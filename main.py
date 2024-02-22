@@ -2,6 +2,7 @@
 Main application layer for Home Security System.
 """
 import json
+import sys
 from typing import Any
 from core.observers.subject.eye_subject import EyeSubject
 from core.observers.subject.wifi_subject import WiFiSubject
@@ -17,7 +18,7 @@ def read_configurations() -> dict[str, Any]:
     """
     This method reads the configurations from the .config.json file.
     """
-    with open(".config.json", "r") as file:
+    with open(".config.json", "r", encoding="utf-8") as file:
         _config = json.load(file)
     main_settings = _config['main_settings']
     strategy_settings = _config['strategy_settings']
@@ -68,4 +69,4 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         print("Exiting...")
-        exit(0)
+        sys.exit(0)

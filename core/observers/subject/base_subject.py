@@ -2,7 +2,7 @@
 The base subject for observer pattern.
 This observer is used to create subjects.
 """
-from abc import ABCMeta, abstractstaticmethod, abstractmethod
+from abc import ABCMeta, abstractmethod
 from core.utils.datatypes import ObserverStates
 from core.observers.observer.base_observer import BaseObserver
 
@@ -38,7 +38,8 @@ class BaseSubject(metaclass=ABCMeta):
         self._current_state = state
         self.notify()
 
-    @abstractstaticmethod
+    @abstractmethod
+    @staticmethod
     def get_default_state() -> ObserverStates:
         """This method is called when the observer is updated."""
         raise NotImplementedError

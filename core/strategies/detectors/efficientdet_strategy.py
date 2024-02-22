@@ -5,7 +5,7 @@ from typing import Any
 import cv2
 import numpy
 from tflite_runtime.interpreter import Interpreter
-from .base_detector_strategy import BaseDetectorStrategy, DetectorResult
+from base_detector_strategy import BaseDetectorStrategy, DetectorResult
 
 
 class EfficientdetStrategy(BaseDetectorStrategy):
@@ -58,8 +58,7 @@ class EfficientdetStrategy(BaseDetectorStrategy):
             if score < cls.DETECTION_THRES:
                 continue
 
-            class_name = labels[int(pred_class)]
-            if class_name == "person":
+            if (labels[int(pred_class)]) == 'person':
                 min_y = round(box[0] * image_height)
                 min_x = round(box[1] * image_width)
                 max_y = round(box[2] * image_height)

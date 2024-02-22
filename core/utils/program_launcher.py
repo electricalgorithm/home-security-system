@@ -1,15 +1,16 @@
 """
 This module contains the program launcher functions.
 """
-from enum import StrEnum
+from enum import Enum
 import subprocess
 
 
-class ICommand(StrEnum):
-    pass
+class ICommand(Enum, str):
+    """Interface for program commands."""
 
 
 class ArpScanCommands(ICommand):
+    """Commands to get connected MAC addresses using ArpScan."""
     GET_VERSION_INFO = "sudo arp-scan --version"
     INSTALL_PROGRAM = "sudo apt-get install arp-scan"
     GET_CONNECTED_MAC_ADDRESSES = "sudo arp-scan --localnet "\
@@ -17,6 +18,7 @@ class ArpScanCommands(ICommand):
 
 
 class PingCommands(ICommand):
+    """Commands to send a ping to a device using ping."""
     GET_VERSION_INFO = "ping --version"
     INSTALL_PROGRAM = "sudo apt-get install iputils-ping"
     PING_TO = "ping -c 1"

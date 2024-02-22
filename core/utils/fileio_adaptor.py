@@ -1,10 +1,17 @@
+"""
+This module contains the functionality neccessary
+to upload intruder's photos to File.io server before
+sending it over WhatsApp.
+"""
 from typing import Any
-import requests
-from requests.auth import HTTPBasicAuth
 import os
 import glob
 import json
 from time import sleep
+
+import requests
+from requests.auth import HTTPBasicAuth
+
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -33,20 +40,20 @@ def read_latest_file(dir_path: str) -> str:
 
 def upload_to_fileio(file_path: str) -> str:
     """Uploads a image file to File.io server."""
-    with open(".config.json", "r") as file:
+    with open(".config.json", "r", encoding="utf-8") as file:
         _config = json.load(file)
     file_io_key = _config['file_io_key']
 
-    response = requests.post(
-        'https://file.io/',
-        files={"file": open(file_path, 'rb')},
-        auth=HTTPBasicAuth(file_io_key, '')
-    )
+    with open(file_path, 'rb') as file:
+        response = requests.post(
+            'https://file.io/',
+            files={"file": file},
+            auth=HTTPBasicAuth(file_io_key, '')
+        )
 
-    logger.debug("File.io response: " + str(response.status_code))
+    logger.debug("File.io response: %s", str(response.status_code))
 
     res: dict[str, Any] = response.json()
     if res['success']:
         return res['link']
-    else:
-        return "File upload failed!"
+    return "File upload failed!"

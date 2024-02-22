@@ -1,11 +1,10 @@
 """
 The Camera strategy for eye strategies.
 """
-from core.utils.logger import get_logger
-
 import cv2
 import numpy
 
+from core.utils.logger import get_logger
 from core.strategies.detectors.base_detector_strategy import BaseDetectorStrategy
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 
