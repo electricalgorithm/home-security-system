@@ -3,7 +3,7 @@ The HOG descriptor strategy for detector strategies.
 """
 import cv2
 import numpy
-from .base_detector_strategy import BaseDetectorStrategy, DetectorResult
+from base_detector_strategy import BaseDetectorStrategy, DetectorResult
 
 
 class HogDescriptorStrategy(BaseDetectorStrategy):

@@ -29,11 +29,11 @@ class IpAddressStrategy(BaseWiFiStrategy):
         """This method checks if there are any protectors around."""
         for protector in self.protectors:
             # Send a ping to the protector.
-            logger.debug("Sending ping to " + protector.name)
+            logger.debug("Sending ping to %s", protector.name)
             output = run_program(PingCommands.PING_TO + " " + protector.address)
             # Check if the ping was successful.
             if "Destination Host Unreachable" not in output:
-                logger.debug("Protector found: " + protector.name)
+                logger.debug("Protector found: %s", protector.name)
                 return WiFiStrategyResult(protector, True)
         logger.debug("No protectors found.")
         return WiFiStrategyResult(None, False)

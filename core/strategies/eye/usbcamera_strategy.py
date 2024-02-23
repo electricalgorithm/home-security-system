@@ -1,11 +1,10 @@
 """
 The Camera strategy for eye strategies.
 """
-from core.utils.logger import get_logger
-
 import cv2
 import numpy
 
+from core.utils.logger import get_logger
 from core.strategies.detectors.base_detector_strategy import BaseDetectorStrategy
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
 
@@ -37,7 +36,7 @@ class UsbCameraStrategy(BaseEyeStrategy):
         # Set the camera resolution.
         camera.set(3, 640)
         camera.set(4, 480)
-        # Read the frame from the camera.
+        #  Read the frame from the camera.
         _, frame = camera.read()
         # Release the camera.
         camera.release()

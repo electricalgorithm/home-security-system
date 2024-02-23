@@ -27,11 +27,11 @@ class HomeSecuritySystemObserver(BaseObserver):
         """This method is called when the observer is updated."""
         if isinstance(subject, WiFiSubject):
             self.wifi_state = subject.get_state()
-            logger.debug("WiFi state: " + str(self.wifi_state.name))
-        
+            logger.debug("WiFi state: %s", str(self.wifi_state.name))
+
         if isinstance(subject, EyeSubject):
             self.eye_state = subject.get_state()
-            logger.debug("Eye state: " + str(self.eye_state.name))
+            logger.debug("Eye state: %s", str(self.eye_state.name))
 
         if self.wifi_state == WiFiStates.DISCONNECTED and self.eye_state == EyeStates.DETECTED:
             logger.info("There is an intruder!")
@@ -39,7 +39,7 @@ class HomeSecuritySystemObserver(BaseObserver):
                 read_latest_file("~/.home-security-system/images")
             )
             self._notifier.notify_all(f"There is an intruder! Here is the image: {fileio_link}.")
-        
+
     def set_notifier(self, notifier: BaseNotifierStrategy) -> None:
         """This method is called when the observer is updated."""
         self._notifier = notifier

@@ -1,10 +1,9 @@
 """
 This module contains the Whatsapp notifier strategy.
 """
-from core.utils.logger import get_logger
-
 import requests
 
+from core.utils.logger import get_logger
 from core.utils.datatypes import WhatsappReciever
 from core.strategies.notifier.base_notifier_strategy import BaseNotifierStrategy
 
@@ -28,7 +27,9 @@ class WhatsappStrategy(BaseNotifierStrategy):
         """Send a WhatsApp message to the user."""
         logger.debug("Sending WhatsApp message (%s) to %s", message, reciever.telephone_number)
         # Send the request.
-        request_url = f"{self.API_URL}?phone={reciever.telephone_number}&text={message}&apikey={reciever.api_key}"
+        request_url = f"{self.API_URL}?" \
+            f"phone={reciever.telephone_number}&" \
+            f"text={message}&apikey={reciever.api_key}"
         response = requests.get(request_url, timeout=10)
 
         # Check if the request was unsuccessful.

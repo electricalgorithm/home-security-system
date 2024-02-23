@@ -17,7 +17,7 @@ class BaseEyeStrategy(metaclass=ABCMeta):
         """This method sets the detector strategy."""
 
     @abstractmethod
-    def get_detector(self) -> BaseDetectorStrategy: 
+    def get_detector(self) -> BaseDetectorStrategy:
         """This method returns the detector strategy."""
 
     @abstractmethod
@@ -27,10 +27,10 @@ class BaseEyeStrategy(metaclass=ABCMeta):
     def _detect_humans(self, frame: ndarray) -> DetectorResult:
         """This method checks if there is a person in front of the camera."""
         return self.get_detector().detect_humans(frame)
-    
+
     def check_if_detected(self) -> EyeStrategyResult:
         """This method checks if there are any protectors around."""
-        # Get the frame from the camera.
+        #  Get the frame from the camera.
         frame = self.get_frame()
         # Detect humans in the frame.
         result = self._detect_humans(frame)

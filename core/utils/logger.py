@@ -10,6 +10,7 @@ LOG_PATH: str = ".logs/home-security-system.log"
 LOG_MB: int = 5
 LOG_FILE_COUNT: int = 5
 
+
 def get_logger(name: str) -> logging.Logger:
     """This function returns a logger with the given name.
     It sets the logger to log messages to a rotated file.
@@ -29,4 +30,3 @@ def get_logger(name: str) -> logging.Logger:
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
-    
