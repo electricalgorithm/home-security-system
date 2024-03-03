@@ -1,11 +1,10 @@
 """
 The strategy which searches for MAC addresses.
 """
-from core.utils.logger import get_logger
-
-from core.utils.program_launcher import run_program, ArpScanCommands
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
-from core.utils.datatypes import WiFiStrategyResult, ConnectedDeviceResult
+from core.utils.datatypes import ConnectedDeviceResult, WiFiStrategyResult
+from core.utils.logger import get_logger
+from core.utils.program_launcher import ArpScanCommands, run_program
 
 # Add logging support.
 logger = get_logger(__name__)

@@ -9,3 +9,4 @@ __pycache__/
 .vagra
 DS_Store
 *.log
+.vscode/*

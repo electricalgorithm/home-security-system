@@ -3,9 +3,9 @@ This module contains the Whatsapp notifier strategy.
 """
 import requests
 
-from core.utils.logger import get_logger
-from core.utils.datatypes import WhatsappReciever
 from core.strategies.notifier.base_notifier_strategy import BaseNotifierStrategy
+from core.utils.datatypes import WhatsappReciever
+from core.utils.logger import get_logger
 
 # Get the logger instance.
 logger = get_logger(__name__)

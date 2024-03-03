@@ -3,7 +3,7 @@ The base strategy for detector strategies.
 This strategy is used to define the interface for all detector strategies.
 """
 
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 
 import numpy

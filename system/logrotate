@@ -1,0 +1,9 @@
+/home/<user>/.home-security-service/logs/*.log
+{
+    daily
+    copytruncate
+    missingok
+    rotate 1
+    compress
+    notifempty
+}
