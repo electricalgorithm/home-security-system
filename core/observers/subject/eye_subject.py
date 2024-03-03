@@ -3,17 +3,17 @@ This class inherits from IBaseSubject.
 Concretes a subject for Eye/Camera features.
 """
 import os
-from datetime import datetime
-from time import sleep
-from threading import Lock
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
+from threading import Lock
+from time import sleep
 
 import cv2
 
-from core.utils.logger import get_logger
-from core.utils.datatypes import EyeStates, EyeStrategyResult
 from core.observers.subject.base_subject import BaseSubject
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
+from core.utils.datatypes import EyeStates, EyeStrategyResult
+from core.utils.logger import get_logger
 
 # Add logging support.
 logger = get_logger(__name__)
@@ -43,24 +43,26 @@ class EyeSubject(BaseSubject):
     def get_default_state() -> EyeStates:
         """This method is called when the observer is updated."""
         return EyeStates.UNREACHABLE
-    
+
     def _cb_save(self, future) -> None:
         """This method is called when the observer is updated."""
-        logger.warning(f"[EyeSubject] The thread died.")
+        logger.warning("[EyeSubject] The thread died.")
         # Create a txt file to indicate the thread died.
         file_location = "eyesubject_thread_died.txt"
-        with open(file_location, "w") as file:
+        with open(file_location, "w", encoding="utf-8") as file:
             file.write("The thread died.")
-        logger.warning(f"[EyeSubject] The thread died. A file is created at {file_location}.")
+        logger.warning("[EyeSubject] The thread died. A file is created at %s.",
+                       file_location)
 
     def run(self,
             eye_strategy: BaseEyeStrategy,
             wifi_lock: Lock | None = None
             ) -> None:
         """This method is called when the observer is updated."""
-        thread = ThreadPoolExecutor(max_workers=1,
-                                    thread_name_prefix="eyesubject")\
-                                        .submit(self._run_in_loop, self, eye_strategy, wifi_lock)
+        thread = ThreadPoolExecutor(
+            max_workers=1,
+            thread_name_prefix="eyesubject"
+        ).submit(self._run_in_loop, self, eye_strategy, wifi_lock)
         thread.add_done_callback(self._cb_save)
 
     def _run_in_loop(self,
@@ -82,7 +84,7 @@ class EyeSubject(BaseSubject):
             logger.debug("[EyeSubject] WiFi Lock Status: %s", wifi_lock.locked())
             if not wifi_lock.locked():
                 result = eye_strategy.check_if_detected()
-                logger.debug("[EyeSubject] EyeStrategyResult: " + str(result.result))
+                logger.debug("[EyeSubject] EyeStrategyResult: %s", str(result.result))
 
                 if result.result:
                     logger.debug("[EyeSubject] Changing state to DETECTED...")
@@ -109,4 +111,5 @@ class EyeSubject(BaseSubject):
         time_now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
         file_location = f"{self._image_path}/intruder_{time_now}.jpg"
         cv2.imwrite(file_location, result.image)
-        logger.debug("[EyeSubject] Image saved to the disk with name: " + f"intruder_{time_now}.jpg")
+        logger.debug("[EyeSubject] Image saved to the disk with name: intruder_%s.jpg",
+                     time_now)

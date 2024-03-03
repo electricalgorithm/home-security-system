@@ -2,10 +2,15 @@
 The base strategy for eye strategies.
 This strategy is used to define the interface for all eye strategies.
 """
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta, abstractmethod
+
 from numpy import ndarray
+
+from core.strategies.detectors.base_detector_strategy import (
+    BaseDetectorStrategy,
+    DetectorResult,
+)
 from core.utils.datatypes import EyeStrategyResult
-from core.strategies.detectors.base_detector_strategy import BaseDetectorStrategy, DetectorResult
 
 
 class BaseEyeStrategy(metaclass=ABCMeta):

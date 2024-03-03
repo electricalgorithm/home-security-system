@@ -3,11 +3,11 @@ This module contains the functionality neccessary
 to upload intruder's photos to File.io server before
 sending it over WhatsApp.
 """
-from typing import Any
-import os
 import glob
 import json
+import os
 from time import sleep
+from typing import Any
 
 import requests
 from requests.auth import HTTPBasicAuth

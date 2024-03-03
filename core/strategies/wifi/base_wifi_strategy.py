@@ -2,7 +2,8 @@
 The base strategy for WiFi strategies.
 This strategy is used to define the interface for all WiFi strategies.
 """
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta, abstractmethod
+
 from core.utils.datatypes import Protector, WiFiStrategyResult
 
 

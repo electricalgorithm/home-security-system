@@ -1,10 +1,10 @@
 """
 The strategy which searches for IP addresses.
 """
-from core.utils.logger import get_logger
-from core.utils.program_launcher import run_program, PingCommands
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
 from core.utils.datatypes import WiFiStrategyResult
+from core.utils.logger import get_logger
+from core.utils.program_launcher import PingCommands, run_program
 
 # Add logging support.
 logger = get_logger(__name__)

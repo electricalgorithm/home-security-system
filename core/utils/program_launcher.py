@@ -1,8 +1,8 @@
 """
 This module contains the program launcher functions.
 """
-from enum import Enum
 import subprocess
+from enum import Enum
 
 
 class ICommand(Enum, str):

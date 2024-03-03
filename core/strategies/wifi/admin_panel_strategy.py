@@ -3,12 +3,12 @@ The strategy which searches for MAC addresses using Admin Panel.
 """
 from typing import Any
 
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 
-from core.utils.logger import get_logger
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
-from core.utils.datatypes import WiFiStrategyResult, ConnectedDeviceResult
+from core.utils.datatypes import ConnectedDeviceResult, WiFiStrategyResult
+from core.utils.logger import get_logger
 
 # Add logging support.
 logger = get_logger(__name__)

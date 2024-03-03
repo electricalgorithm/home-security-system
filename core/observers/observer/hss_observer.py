@@ -1,14 +1,14 @@
 """
 The observer for Home Security System.
 """
-from core.utils.logger import get_logger
 from core.observers.observer.base_observer import BaseObserver
 from core.observers.subject.base_subject import BaseSubject
-from core.observers.subject.wifi_subject import WiFiSubject
 from core.observers.subject.eye_subject import EyeSubject
-from core.utils.datatypes import EyeStates, WiFiStates
-from core.utils.fileio_adaptor import upload_to_fileio, read_latest_file
+from core.observers.subject.wifi_subject import WiFiSubject
 from core.strategies.notifier.base_notifier_strategy import BaseNotifierStrategy
+from core.utils.datatypes import EyeStates, WiFiStates
+from core.utils.fileio_adaptor import read_latest_file, upload_to_fileio
+from core.utils.logger import get_logger
 
 # Add logging support.
 logger = get_logger(__name__)

@@ -4,9 +4,9 @@ The Camera strategy for eye strategies.
 import numpy
 from picamera2 import Picamera2
 
-from core.utils.logger import get_logger
 from core.strategies.detectors.base_detector_strategy import BaseDetectorStrategy
 from core.strategies.eye.base_eye_strategy import BaseEyeStrategy
+from core.utils.logger import get_logger
 
 # Add logging support.
 logger = get_logger(__name__)

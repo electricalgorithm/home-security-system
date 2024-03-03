@@ -1,8 +1,8 @@
 """
 This module contains datatypes needed for architecture.
 """
-from enum import IntEnum, auto, unique
 from dataclasses import dataclass
+from enum import IntEnum, auto, unique
 
 
 @dataclass

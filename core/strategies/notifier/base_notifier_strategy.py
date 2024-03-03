@@ -2,6 +2,7 @@
 This module contains the base notifier strategy.
 """
 from abc import ABCMeta, abstractmethod
+
 from core.utils.datatypes import NotifierReciever
 
 
