@@ -5,6 +5,10 @@ This observer is used to create subjects.
 from abc import ABCMeta, abstractmethod
 from core.utils.datatypes import ObserverStates
 from core.observers.observer.base_observer import BaseObserver
+from core.utils.logger import get_logger
+
+# Create a logger instance.
+logger = get_logger(__name__)
 
 
 class BaseSubject(metaclass=ABCMeta):
@@ -26,6 +30,7 @@ class BaseSubject(metaclass=ABCMeta):
 
     def notify(self) -> None:
         """This method is called when the observer is updated."""
+        logger.debug(f"[Subject: {self.__class__.__name__}] Notifying observers...")
         for observer in self._observers:
             observer.update(self)
 
@@ -35,6 +40,7 @@ class BaseSubject(metaclass=ABCMeta):
 
     def set_state(self, state: ObserverStates) -> None:
         """This method is called when the observer is updated."""
+        logger.debug(f"[Subject: {self.__class__.__name__}] {self._current_state.name}->{state.name}")
         self._current_state = state
         self.notify()
 

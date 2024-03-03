@@ -5,7 +5,8 @@ Concretes a subject for Eye/Camera features.
 import os
 from datetime import datetime
 from time import sleep
-from threading import Thread, Lock
+from threading import Lock
+from concurrent.futures import ThreadPoolExecutor
 
 import cv2
 
@@ -42,48 +43,61 @@ class EyeSubject(BaseSubject):
     def get_default_state() -> EyeStates:
         """This method is called when the observer is updated."""
         return EyeStates.UNREACHABLE
+    
+    def _cb_save(self, future) -> None:
+        """This method is called when the observer is updated."""
+        logger.warning(f"[EyeSubject] The thread died.")
+        # Create a txt file to indicate the thread died.
+        file_location = "eyesubject_thread_died.txt"
+        with open(file_location, "w") as file:
+            file.write("The thread died.")
+        logger.warning(f"[EyeSubject] The thread died. A file is created at {file_location}.")
 
     def run(self,
             eye_strategy: BaseEyeStrategy,
             wifi_lock: Lock | None = None
             ) -> None:
         """This method is called when the observer is updated."""
-        thread = Thread(target=self._run_in_loop, args=(self, eye_strategy, wifi_lock))
-        thread.start()
-        logger.debug("EyeSubject is running...")
+        thread = ThreadPoolExecutor(max_workers=1,
+                                    thread_name_prefix="eyesubject")\
+                                        .submit(self._run_in_loop, self, eye_strategy, wifi_lock)
+        thread.add_done_callback(self._cb_save)
 
     def _run_in_loop(self,
                      eye_strategy: BaseEyeStrategy,
                      wifi_lock: Lock | None = None
                      ) -> None:
         """This method is called when the observer is updated."""
+        logger.debug("[EyeSubject] Thread is started.")
         sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
 
         # Create a dummy lock instance if not given.
         if wifi_lock is None:
+            logger.debug("[EyeSubject] A lock instance is generated.")
             wifi_lock = Lock()
 
         while True:
             # If WiFi subject would give rights to use camera,
             # Check if any intruders detected.
+            logger.debug("[EyeSubject] WiFi Lock Status: %s", wifi_lock.locked())
             if not wifi_lock.locked():
                 result = eye_strategy.check_if_detected()
-                logger.debug("EyeStrategyResult: %s", str(result.result))
+                logger.debug("[EyeSubject] EyeStrategyResult: " + str(result.result))
 
                 if result.result:
-                    logger.debug("Changing state to DETECTED...")
+                    logger.debug("[EyeSubject] Changing state to DETECTED...")
                     self._save_image(result)
                     self.set_state(EyeStates.DETECTED)
                     sleep_interval = EyeSubject.SLEEP_INTERVAL_DETECTED
                 else:
-                    logger.debug("Changing state to NOT_DETECTED...")
+                    logger.debug("[EyeSubject] Changing state to NOT_DETECTED...")
                     self.set_state(EyeStates.NOT_DETECTED)
                     sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
 
             #  If the WiFi subject does not give rights,
             # aka: "There is protectors around the house."
             else:
-                logger.debug("Changing state to UNREACHABLE...")
+                logger.debug("[EyeSubject] Changing state to UNREACHABLE...")
                 self.set_state(EyeStates.UNREACHABLE)
                 sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
 
@@ -91,8 +105,8 @@ class EyeSubject(BaseSubject):
 
     def _save_image(self, result: EyeStrategyResult) -> None:
         """This method is called when the observer is updated."""
-        logger.debug("Saving image to the disk...")
+        logger.debug("[EyeSubject] Saving image to the disk...")
         time_now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
         file_location = f"{self._image_path}/intruder_{time_now}.jpg"
         cv2.imwrite(file_location, result.image)
-        logger.debug("Image saved to the disk with name: intruder_%s.jpg", time_now)
+        logger.debug("[EyeSubject] Image saved to the disk with name: " + f"intruder_{time_now}.jpg")
