@@ -5,6 +5,7 @@ Concretes a subject WiFi features.
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 from time import sleep
+from typing import Optional
 
 from core.observers.subject.base_subject import BaseSubject
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
@@ -20,7 +21,7 @@ class WiFiSubject(BaseSubject):
     This class inherits from IBaseSubject.
     Concretes a subject for WiFiS features.
     """
-    SINGLETON_LOCK: Lock | None = None
+    SINGLETON_LOCK: Optional[Lock] = None
     CHECK_INTERVAL: int = 5
 
     @staticmethod
