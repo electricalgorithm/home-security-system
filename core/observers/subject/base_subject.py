@@ -50,7 +50,6 @@ class BaseSubject(metaclass=ABCMeta):
         self.notify()
 
     @abstractmethod
-    @staticmethod
     def get_default_state() -> ObserverStates:
         """This method is called when the observer is updated."""
         raise NotImplementedError

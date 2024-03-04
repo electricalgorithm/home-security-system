@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from threading import Lock
 from time import sleep
+from typing import Optional
 
 import cv2
 
@@ -56,7 +57,7 @@ class EyeSubject(BaseSubject):
 
     def run(self,
             eye_strategy: BaseEyeStrategy,
-            wifi_lock: Lock | None = None
+            wifi_lock: Optional[Lock] = None
             ) -> None:
         """This method is called when the observer is updated."""
         thread = ThreadPoolExecutor(
@@ -65,9 +66,10 @@ class EyeSubject(BaseSubject):
         ).submit(self._run_in_loop, self, eye_strategy, wifi_lock)
         thread.add_done_callback(self._cb_save)
 
+    @staticmethod
     def _run_in_loop(self,
                      eye_strategy: BaseEyeStrategy,
-                     wifi_lock: Lock | None = None
+                     wifi_lock: Optional[Lock] = None
                      ) -> None:
         """This method is called when the observer is updated."""
         logger.debug("[EyeSubject] Thread is started.")

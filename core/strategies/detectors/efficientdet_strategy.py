@@ -5,8 +5,9 @@ from typing import Any
 
 import cv2
 import numpy
-from base_detector_strategy import BaseDetectorStrategy, DetectorResult
 from tflite_runtime.interpreter import Interpreter
+
+from .base_detector_strategy import BaseDetectorStrategy, DetectorResult
 
 
 class EfficientdetStrategy(BaseDetectorStrategy):
