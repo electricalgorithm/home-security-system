@@ -2,9 +2,9 @@
 This class inherits from IBaseSubject.
 Concretes a subject WiFi features.
 """
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 from threading import Lock
-from time import sleep
+from time import sleep, time
 from typing import Optional
 
 from core.observers.subject.base_subject import BaseSubject
@@ -23,37 +23,29 @@ class WiFiSubject(BaseSubject):
     """
     SINGLETON_LOCK: Optional[Lock] = None
     CHECK_INTERVAL: int = 5
+    
+    def __init__(self):
+        super().__init__()
+        # To run the WiFi after thread dies.
+        self.thread: Optional[Future] = None
+        self._wifi_strategy: Optional[BaseWiFiStrategy] = None
 
     @staticmethod
     def get_default_state() -> WiFiStates:
         """This method is called when the observer is updated."""
         return WiFiStates.UNREACHABLE
 
-    def _cb_save(self, future) -> None:
-        """This method is called when the observer is updated."""
-        logger.warning("[WiFiSubject] The thread died.")
-        file_location = "wifisubject_thread_died.txt"
-        with open(file_location, "w", encoding="utf-8") as file:
-            file.write("The thread died.")
-        logger.warning("[WiFiSubject] The thread died. A file is created at %s.",
-                       file_location)
-
-    def _cb_save(self, future) -> None:
-        """This method is called when the observer is updated."""
-        logger.warning("[WiFiSubject] The thread died.")
-        file_location = "wifisubject_thread_died.txt"
-        with open(file_location, "w", encoding="utf-8") as file:
-            file.write("The thread died.")
-        logger.warning("[WiFiSubject] The thread died. A file is created at %s.",
-                       file_location)
-
     def run(self, wifi_strategy: BaseWiFiStrategy) -> None:
         """This method is called when the observer is updated."""
-        thread = ThreadPoolExecutor(
+        # Update the latest configurations.
+        self._wifi_strategy = wifi_strategy
+        
+        # Start the thread.
+        self.thread = ThreadPoolExecutor(
             max_workers=1,
             thread_name_prefix="wifisubject"
         ).submit(self._run_in_loop, self, wifi_strategy)
-        thread.add_done_callback(self._cb_save)
+        self.thread.add_done_callback(self._cb_done)
 
     @classmethod
     def get_protector_lock(cls) -> Lock:
@@ -89,3 +81,13 @@ class WiFiSubject(BaseSubject):
                     protector_lock.release()
                     logger.debug("[WiFiSubject] Protector lock is released.")
             sleep(self.CHECK_INTERVAL)
+
+    def _cb_done(self, future) -> None:
+        """This method is called when the observer is updated."""
+        logger.warning("[WiFiSubject] The thread died.")
+        file_location = "thread_die.txt"
+        with open(file_location, "a", encoding="utf-8") as file:
+            file.write(f"The WiFiSubject thread died. Time: {time()}")
+
+        # Run the thread again.
+        self.run(self._wifi_strategy)
