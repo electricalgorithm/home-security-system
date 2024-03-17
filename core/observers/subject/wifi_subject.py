@@ -38,6 +38,15 @@ class WiFiSubject(BaseSubject):
         logger.warning("[WiFiSubject] The thread died. A file is created at %s.",
                        file_location)
 
+    def _cb_save(self, future) -> None:
+        """This method is called when the observer is updated."""
+        logger.warning("[WiFiSubject] The thread died.")
+        file_location = "wifisubject_thread_died.txt"
+        with open(file_location, "w", encoding="utf-8") as file:
+            file.write("The thread died.")
+        logger.warning("[WiFiSubject] The thread died. A file is created at %s.",
+                       file_location)
+
     def run(self, wifi_strategy: BaseWiFiStrategy) -> None:
         """This method is called when the observer is updated."""
         thread = ThreadPoolExecutor(
