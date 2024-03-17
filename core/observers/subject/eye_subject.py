@@ -36,7 +36,7 @@ class EyeSubject(BaseSubject):
             if '~' not in image_path
             else os.path.expanduser(image_path)
         )
-        
+
         # To run the eye after thread dies.
         self.thread: Optional[Future] = None
         self._eye_strategy: Optional[BaseEyeStrategy] = None
@@ -48,7 +48,7 @@ class EyeSubject(BaseSubject):
     @staticmethod
     def get_default_state() -> EyeStates:
         """This method is called when the observer is updated."""
-        return EyeStates.UNREACHABLE        
+        return EyeStates.UNREACHABLE
 
     def run(self,
             eye_strategy: BaseEyeStrategy,
@@ -58,7 +58,7 @@ class EyeSubject(BaseSubject):
         # Update the latest configurations.
         self._eye_strategy = eye_strategy
         self._wifi_lock = wifi_lock
-        
+
         # Run the thread.
         self.thread = ThreadPoolExecutor(
             max_workers=1,

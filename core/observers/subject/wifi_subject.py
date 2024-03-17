@@ -23,7 +23,7 @@ class WiFiSubject(BaseSubject):
     """
     SINGLETON_LOCK: Optional[Lock] = None
     CHECK_INTERVAL: int = 5
-    
+
     def __init__(self):
         super().__init__()
         # To run the WiFi after thread dies.
@@ -39,7 +39,7 @@ class WiFiSubject(BaseSubject):
         """This method is called when the observer is updated."""
         # Update the latest configurations.
         self._wifi_strategy = wifi_strategy
-        
+
         # Start the thread.
         self.thread = ThreadPoolExecutor(
             max_workers=1,

@@ -64,14 +64,15 @@ def main():
     camera = PiCameraStrategy()
     camera.set_detector(EfficientdetStrategy())
     eye_subject.run(camera, wifi_subject.get_protector_lock())
-    
+
     # Notify that the system is running.
     whatsapp_notifier.notify_all("Home Security System is started.")
-    
+
     # Wait for the futures.
     _, failures = wait([wifi_subject.thread, eye_subject.thread])
     for failure in failures:
-        whatsapp_notifier.notify_all("Home Security System has failed to run. Please check the logs.")
+        whatsapp_notifier.notify_all("Home Security System has failed to run. "
+                                     "Please check the logs.")
         whatsapp_notifier.notify_all("Error: " + str(failure.exception()))
         whatsapp_notifier.notify_all("Result: " + str(failure.result()))
         # Close the application to let systemd re-start it.
