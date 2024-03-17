@@ -18,7 +18,6 @@ def get_logger(name: str) -> logging.Logger:
     log_dir: str = os.path.dirname(LOG_PATH)
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
-
     # Configure the log messages.
     formatter: logging.Formatter = logging.Formatter(
         fmt='[%(asctime)s] -- [%(levelname)s] -- %(name)s (%(funcName)s): %(message)s',

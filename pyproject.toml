@@ -1,0 +1,75 @@
+[project]
+name = "home-security-system"
+description = "Check human presence within a camera in your Raspberry Pi if your phone is not connected to the WiFi network."
+keywords = ["security-system", "tinyml", "camera", "embedded-linux"]
+version = "2024.3.0"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+
+    "License :: OSI Approved :: MIT License",
+
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+
+requires-python = ">= 3.8"
+authors = [{ name = "Gökhan Koçmarlı", email = "gokhan.kocmarli@gmail.com" }]
+maintainers = [
+    { name = "Gökhan Koçmarlı", email = "gokhan.kocmarli@gmail.com" },
+]
+
+[project.urls]
+Homepage = "https://github.com/electricalgorithm/home-security-system"
+Repository = "https://github.com/electricalgorithm/home-security-system.git"
+Issues = "https://github.com/electricalgorithm/home-security-system/issues"
+
+
+[tool.flake8]
+exclude = [".git", "__pycache__", "*venv", "build", "dist", "venv*"]
+max-line-length = 100
+count = true
+
+[tool.pylint.main]
+persistent = true
+extension-pkg-whitelist = "cv2"
+ignore = [".git", "__pycache__", "*venv", "build", "dist", "venv*"]
+fail-under = '8.5'
+ignore-patterns = ["^\\.#"]
+jobs = 5
+limit-inference-results = 100
+load-plugins = [
+    "pylint.extensions.check_elif",
+    "pylint.extensions.bad_builtin",
+    "pylint.extensions.docparams",
+    "pylint.extensions.for_any_all",
+    "pylint.extensions.set_membership",
+    "pylint.extensions.code_style",
+    "pylint.extensions.overlapping_exceptions",
+    "pylint.extensions.typing",
+    "pylint.extensions.redefined_variable_type",
+    "pylint.extensions.comparison_placement",
+    "pylint.extensions.mccabe",
+]
+py-version = "3.10"
+suggestion-mode = true
+
+[tool.pylint.FORMAT]
+ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
+
+[tool.pylint."messages control"]
+disable = [
+    "too-few-public-methods",
+    "arguments-differ",
+    "import-error",
+    "too-many-locals",
+]
