@@ -58,7 +58,7 @@ async def info(message):
                                 "/inhouse - provides if protectors are in house, and whose.\n"
                                 "/imageshot - captures an image and sends.\n"
                                 "/reboot - reboots the hardware.\n"
-                                "/shell echo 'test'- provides a shell access to the hardware.\n\n"
+                                "/shell echo 'test'- provides a shell access to the hardware.\n"
                                 "/info, /help, /hi - this help text.\n")
 
 
