@@ -3,7 +3,7 @@ Description=Home Security System
 After=network.target
 
 [Service]
-ExecStart=/home/raspberry/home-security-system/.hss_venv/bin/python /home/raspberry/home-security-system/main.py
+ExecStart=/home/raspberry/home-security-system/.hss_venv/bin/python /home/raspberry/home-security-system/hss.py
 Restart=always
 User=raspberry
 WorkingDirectory=/home/raspberry/home-security-system/

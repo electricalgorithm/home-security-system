@@ -19,7 +19,7 @@ from core.utils.datatypes import Protector, TelegramReciever
 from core.utils.fileio_adaptor import upload_to_fileio
 
 
-def read_configurations() -> dict[str, Any]:
+def read_configurations() -> tuple[dict[str, Any], dict[str, Any]]:
     """
     This method reads the configurations from the .config.json file.
     """
