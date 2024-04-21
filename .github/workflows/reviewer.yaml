@@ -17,10 +17,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pylint
+        pip install flake8 pylint Flake8-pyproject
     - name: Checking the code using Flake8
       run: |
-        flake8 --toml-config=pyproject.toml $(git ls-files '*.py')
+        flake8 $(git ls-files '*.py')
     - name: Reviewing the code using Pylint
       run: |
         pylint $(git ls-files '*.py')
