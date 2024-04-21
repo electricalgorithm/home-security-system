@@ -6,7 +6,7 @@ import os
 from concurrent.futures import Future, ThreadPoolExecutor
 from datetime import datetime
 from threading import Lock
-from time import sleep, time
+from time import sleep
 from typing import Optional
 
 import cv2
@@ -79,7 +79,7 @@ class EyeSubject(BaseSubject):
         if wifi_lock is None:
             logger.debug("[EyeSubject] A lock instance is generated.")
             wifi_lock = Lock()
-            
+
         # Save an initial image.
         initial_frame = eye_strategy.get_frame()
         file_location = f"{self._image_path}/initial_frame.jpg"

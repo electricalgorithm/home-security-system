@@ -41,11 +41,13 @@ class HomeSecuritySystemObserver(BaseObserver):
                 fileio_link = upload_to_fileio(
                     read_latest_file("~/.home-security-system/images")
                 )
-                self._notifier.notify_all(f"There is an intruder! Here is the image: {fileio_link}.")
+                self._notifier.notify_all(
+                    f"There is an intruder! Here is the image: {fileio_link}."
+                )
             elif isinstance(self._notifier, TelegramStrategy):
                 latest_file = read_latest_file("~/.home-security-system/images")
                 with open(latest_file, 'rb') as intruder_image:
-                    self._notifier.notify_all(f"There is an intruder! Here is the image:")
+                    self._notifier.notify_all("There is an intruder! Here is the image:")
                     self._notifier.send_image_all(intruder_image)
             else:
                 logger.error("Notifier is not set!")

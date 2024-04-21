@@ -4,7 +4,7 @@ Concretes a subject WiFi features.
 """
 from concurrent.futures import Future, ThreadPoolExecutor
 from threading import Lock
-from time import sleep, time
+from time import sleep
 from typing import Optional
 
 from core.observers.subject.base_subject import BaseSubject

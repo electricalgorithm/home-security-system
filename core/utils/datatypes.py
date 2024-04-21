@@ -64,7 +64,8 @@ class WhatsappReciever(NotifierReciever):
     """This class represents WhatsApp reciever."""
     telephone_number: str
     api_key: str
-    
+
+
 @dataclass
 class TelegramReciever(NotifierReciever):
     """This class represents Telegram reciever."""

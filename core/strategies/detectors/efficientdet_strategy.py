@@ -61,13 +61,6 @@ class EfficientdetStrategy(BaseDetectorStrategy):
                 continue
 
             if (labels[int(pred_class)]) == 'person':
-                # min_y = round(box[0] * image_height)
-                # min_x = round(box[1] * image_width)
-                # max_y = round(box[2] * image_height)
-                # max_x = round(box[3] * image_width)
-                # detection_regions.append((min_x, max_x, min_y, max_y))
-                # cv2.rectangle(image, (min_x, min_y), (max_x, max_y), (0, 255, 0), 2)
-                
                 frame_height, frame_width = frame.shape[:2]
                 min_y = round(box[0] * frame_height)
                 min_x = round(box[1] * frame_width)

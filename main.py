@@ -70,7 +70,7 @@ def main():
     # Notify that the system is running.
     notifier.notify_all("Home Security System is started.")
     sleep(5)
-    
+
     if isinstance(notifier, TelegramStrategy):
         with open(f"{eye_subject._image_path}/initial_frame.jpg", "rb") as initial_frame:
             notifier.send_image_all(initial_frame)
@@ -81,8 +81,7 @@ def main():
     # Wait for the futures.
     _, failures = wait([wifi_subject.thread, eye_subject.thread], return_when="FIRST_COMPLETED")
     for failure in failures:
-        notifier.notify_all("Home Security System has failed to run. "
-                                     "Please check the logs.")
+        notifier.notify_all("Home Security System has failed to run. Please check the logs.")
         notifier.notify_all("Failure: " + str(failure))
         notifier.notify_all("Error: " + str(failure.exception()))
         notifier.notify_all("Result: " + str(failure.result()))
