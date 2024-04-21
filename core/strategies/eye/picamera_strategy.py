@@ -1,6 +1,7 @@
 """
 The Camera strategy for eye strategies.
 """
+import cv2
 import numpy
 from picamera2 import Picamera2
 
@@ -32,11 +33,10 @@ class PiCameraStrategy(BaseEyeStrategy):
         """This method returns the frame from the camera."""
         # Internal attributes
         picam2 = Picamera2()
-        picam2.configure(picam2.create_preview_configuration(
-            main={"format": 'XRGB8888', "size": (640, 480)}
-        ))
+        still_configuration = picam2.create_still_configuration(main={"format": 'XRGB8888'})
+        picam2.configure(still_configuration)
         picam2.start()
         frame = picam2.capture_array()
         picam2.close()
         del picam2
-        return frame
+        return cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
