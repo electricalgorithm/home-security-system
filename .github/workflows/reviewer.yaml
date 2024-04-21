@@ -20,7 +20,7 @@ jobs:
         pip install flake8 pylint
     - name: Checking the code using Flake8
       run: |
-        flake8 $(git ls-files '*.py')
+        flake8 --toml-config=pyproject.toml $(git ls-files '*.py')
     - name: Reviewing the code using Pylint
       run: |
         pylint $(git ls-files '*.py')
