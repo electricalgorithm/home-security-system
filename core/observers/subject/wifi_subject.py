@@ -85,9 +85,6 @@ class WiFiSubject(BaseSubject):
     def _cb_done(self, future) -> None:
         """This method is called when the observer is updated."""
         logger.warning("[WiFiSubject] The thread died.")
-        file_location = "thread_die.txt"
-        with open(file_location, "a", encoding="utf-8") as file:
-            file.write(f"The WiFiSubject thread died. Time: {time()}")
 
         # Run the thread again.
         self.run(self._wifi_strategy)

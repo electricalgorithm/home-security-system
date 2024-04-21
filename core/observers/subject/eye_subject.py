@@ -79,6 +79,12 @@ class EyeSubject(BaseSubject):
         if wifi_lock is None:
             logger.debug("[EyeSubject] A lock instance is generated.")
             wifi_lock = Lock()
+            
+        # Save an initial image.
+        initial_frame = eye_strategy.get_frame()
+        file_location = f"{self._image_path}/initial_frame.jpg"
+        cv2.imwrite(file_location, initial_frame)
+        logger.debug("[EyeSubject] Initial frame has been saved.")
 
         while True:
             # If WiFi subject would give rights to use camera,
@@ -119,10 +125,6 @@ class EyeSubject(BaseSubject):
     def _cb_done(self, future) -> None:
         """This method is called when the observer is updated."""
         logger.warning("[EyeSubject] The thread died.")
-        # Create a txt file to indicate the thread died.
-        file_location = "thread_die.txt"
-        with open(file_location, "a", encoding="utf-8") as file:
-            file.write(f"The EyeSubject thread died. Time: {time()}")
 
         # Start the thread again.
         self.run(self._eye_strategy, self._wifi_lock)
