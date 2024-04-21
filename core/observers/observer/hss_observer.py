@@ -6,6 +6,8 @@ from core.observers.subject.base_subject import BaseSubject
 from core.observers.subject.eye_subject import EyeSubject
 from core.observers.subject.wifi_subject import WiFiSubject
 from core.strategies.notifier.base_notifier_strategy import BaseNotifierStrategy
+from core.strategies.notifier.telegram_strategy import TelegramStrategy
+from core.strategies.notifier.whatsapp_strategy import WhatsappStrategy
 from core.utils.datatypes import EyeStates, WiFiStates
 from core.utils.fileio_adaptor import read_latest_file, upload_to_fileio
 from core.utils.logger import get_logger
@@ -35,10 +37,18 @@ class HomeSecuritySystemObserver(BaseObserver):
 
         if self.wifi_state == WiFiStates.DISCONNECTED and self.eye_state == EyeStates.DETECTED:
             logger.info("There is an intruder!")
-            fileio_link = upload_to_fileio(
-                read_latest_file("~/.home-security-system/images")
-            )
-            self._notifier.notify_all(f"There is an intruder! Here is the image: {fileio_link}.")
+            if isinstance(self._notifier, WhatsappStrategy):
+                fileio_link = upload_to_fileio(
+                    read_latest_file("~/.home-security-system/images")
+                )
+                self._notifier.notify_all(f"There is an intruder! Here is the image: {fileio_link}.")
+            elif isinstance(self._notifier, TelegramStrategy):
+                latest_file = read_latest_file("~/.home-security-system/images")
+                with open(latest_file, 'rb') as intruder_image:
+                    self._notifier.notify_all(f"There is an intruder! Here is the image:")
+                    self._notifier.send_image_all(intruder_image)
+            else:
+                logger.error("Notifier is not set!")
 
     def set_notifier(self, notifier: BaseNotifierStrategy) -> None:
         """This method is called when the observer is updated."""
