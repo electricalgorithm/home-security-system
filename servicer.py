@@ -10,7 +10,7 @@ Main responsibilities of the servicer as follows:
     - Bot provides if protectors are in house, and whose. (/inhouse)
     - Bot provides an image-shot if wanted. (/imageshot)
     - Bot schedules a reboot for the hardware. (/reboot)
-
+    - Bot provides a shell access to the hardware. (/shell)
 """
 import asyncio
 import json
@@ -34,6 +34,7 @@ def read_configurations() -> tuple[dict[str, Any], dict[str, Any]]:
     strategy_settings = _config['strategy_settings']
     return main_settings, strategy_settings
 
+
 # Definitations
 MAIN_CONIGS, STRATEGY_CONFIGS = read_configurations()
 SERVICER_BOT = AsyncTeleBot(token=STRATEGY_CONFIGS["telegram_strategy"]["bot_key"])
@@ -47,16 +48,19 @@ async def info(message):
     """
     This method is called when the /info, /help or /hi command is sent.
     """
-    await SERVICER_BOT.reply_to(message, f"Hi, I am the Home Security System Servicer Bot.\n\n"
-                                         f"Here are the commands you can use:\n"
-                                         f"/alive - provides if hardware and the bot itself is alive.\n"
-                                         f"/health hss.service - provides if the service is dead or alive.\n"
-                                         f"/restart hss.service - restarts the given service.\n"
-                                         f"/logs hss.service:N - provides the latest N logs.\n"
-                                         f"/inhouse - provides if protectors are in house, and whose.\n"
-                                         f"/imageshot - captures an image and sends.\n"
-                                         f"/reboot - reboots the hardware.\n"
-                                         f"/info, /help, /hi - this help text.\n")
+    await SERVICER_BOT.reply_to(message,
+                                "Hi, I am the Home Security System Servicer Bot.\n\n"
+                                "Here are the commands you can use:\n"
+                                "/alive - provides if hardware and the bot itself is alive.\n"
+                                "/health hss.service - provides if the service is dead or alive.\n"
+                                "/restart hss.service - restarts the given service.\n"
+                                "/logs hss.service:N - provides the latest N logs.\n"
+                                "/inhouse - provides if protectors are in house, and whose.\n"
+                                "/imageshot - captures an image and sends.\n"
+                                "/reboot - reboots the hardware.\n"
+                                "/shell echo 'test'- provides a shell access to the hardware.\n\n"
+                                "/info, /help, /hi - this help text.\n")
+
 
 @SERVICER_BOT.message_handler(commands=['alive'])
 async def alive(message):
@@ -64,7 +68,8 @@ async def alive(message):
     This method is called when the /alive command is sent.
     """
     await SERVICER_BOT.reply_to(message, "I am alive.")
-    
+
+
 @SERVICER_BOT.message_handler(commands=['health'])
 async def health(message):
     """
@@ -78,10 +83,10 @@ async def health(message):
         service_name: str = service.Unit.Description.decode("utf-8")
         main_pid: str = service.Service.MainPID
         await SERVICER_BOT.reply_to(message,
-                            f"Service: {service_name}\n"
-                            f"Active State: {active_state}\n"
-                            f"Sub State: {sub_state}\n"
-                            f"Main PID: {main_pid}")
+                                    f"Service: {service_name}\n"
+                                    f"Active State: {active_state}\n"
+                                    f"Sub State: {sub_state}\n"
+                                    f"Main PID: {main_pid}")
 
 
 @SERVICER_BOT.message_handler(commands=['restart'])
@@ -109,6 +114,7 @@ async def logs(message):
         logs = log_file.readlines()[-int(last_n_lines):]
         await SERVICER_BOT.reply_to(message, "".join(logs))
 
+
 @SERVICER_BOT.message_handler(commands=['inhouse'])
 async def in_house(message):
     """
@@ -124,7 +130,7 @@ async def in_house(message):
     response = f"Connected MACs: {[device.address for device in connected_macs]}\n\n\n" \
                f"Protectors in house: {connected_protectors}"
     await SERVICER_BOT.reply_to(message, response)
-    
+
 
 @SERVICER_BOT.message_handler(commands=['imageshot'])
 async def image_shot(message):
@@ -140,6 +146,29 @@ async def image_shot(message):
     await SERVICER_BOT.send_photo(message.chat.id, encoded_frame.tobytes())
     del frame, encoded_frame
 
-    
+
+@SERVICER_BOT.message_handler(commands=['reboot'])
+async def reboot(message):
+    """
+    This method is called when the /reboot command is sent.
+    """
+    await SERVICER_BOT.reply_to(message, "Rebooting the hardware.")
+    with systemd.Manager() as manager:
+        manager.Reboot()
+    await SERVICER_BOT.reply_to(message, "Hardware is rebooted.")
+
+
+@SERVICER_BOT.message_handler(commands=["shell"])
+async def shell_run(message):
+    """
+    This method is called when the /shell command is sent.
+    """
+    command = message.text[len("/shell"):].strip()
+    process = await asyncio.create_subprocess_shell(command,
+                                                    stdout=asyncio.subprocess.PIPE,
+                                                    stderr=asyncio.subprocess.PIPE)
+    stdout, stderr = await process.communicate()
+    await SERVICER_BOT.reply_to(message, f"stdout: {stdout.decode()}\nstderr: {stderr.decode()}")
+
 if __name__ == "__main__":
     asyncio.run(SERVICER_BOT.polling())
