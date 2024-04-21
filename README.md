@@ -10,11 +10,11 @@ This project is a home security system that uses a Raspberry Pi and a camera, wh
 ### Installation
 
 ```bash
-$ sudo apt install -y python3-picamera2
+$ sudo apt install -y python3-picamera2 libsystemd-dev
 $ virtualenv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
-$ python main.py
+$ python hss.py
 ```
 
 Create a `.config.json` file in the root directory with the following content:

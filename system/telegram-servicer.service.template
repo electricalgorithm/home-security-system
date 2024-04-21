@@ -1,0 +1,13 @@
+[Unit]
+Description=Telegram Servicer
+After=network.target
+
+[Service]
+ExecStart=/home/raspberry/home-security-system/.hss_venv/bin/python /home/raspberry/home-security-system/servicer.py
+Restart=always
+User=root
+WorkingDirectory=/home/raspberry/home-security-system/
+RestartSec=30
+
+[Install]
+WantedBy=default.target
