@@ -22,7 +22,7 @@ class PiCameraStrategy(BaseEyeStrategy):
         self._detector = None
         self._picam2 = Picamera2()
         still_configuration = self._picam2.create_still_configuration(
-            main={"format": 'YUV420'}
+            main={"format": 'XRGB8888'}
         )
         self._picam2.configure(still_configuration)
 
@@ -45,5 +45,5 @@ class PiCameraStrategy(BaseEyeStrategy):
             logger.error(
                 "An error occurred while capturing the frame: %s", error)
             raise RuntimeError from error
-        return cv2.rotate(cv2.cvtColor(frame, cv2.COLOR_YUV420p2RGB),
+        return cv2.rotate(frame,
                           cv2.ROTATE_90_COUNTERCLOCKWISE)
