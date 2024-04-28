@@ -17,8 +17,14 @@ class PiCameraStrategy(BaseEyeStrategy):
     """
     The camera strategy for eye strategies.
     """
+
     def __init__(self):
         self._detector = None
+        self._picam2 = Picamera2()
+        still_configuration = self._picam2.create_still_configuration(
+            main={"format": 'XRGB8888'}
+        )
+        self._picam2.configure(still_configuration)
 
     # Interface methods.
     def set_detector(self, detector: BaseDetectorStrategy) -> None:
@@ -31,12 +37,13 @@ class PiCameraStrategy(BaseEyeStrategy):
 
     def get_frame(self) -> numpy.ndarray:
         """This method returns the frame from the camera."""
-        # Internal attributes
-        picam2 = Picamera2()
-        still_configuration = picam2.create_still_configuration(main={"format": 'XRGB8888'})
-        picam2.configure(still_configuration)
-        picam2.start()
-        frame = picam2.capture_array()
-        picam2.close()
-        del picam2
-        return cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        try:
+            self._picam2.start()
+            frame = self._picam2.capture_array()
+            self._picam2.stop()
+        except Exception as error:
+            logger.error(
+                "An error occurred while capturing the frame: %s", error)
+            raise RuntimeError from error
+        return cv2.rotate(frame,
+                          cv2.ROTATE_90_COUNTERCLOCKWISE)

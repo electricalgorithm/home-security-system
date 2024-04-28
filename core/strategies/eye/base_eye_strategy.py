@@ -36,7 +36,10 @@ class BaseEyeStrategy(metaclass=ABCMeta):
     def check_if_detected(self) -> EyeStrategyResult:
         """This method checks if there are any protectors around."""
         #  Get the frame from the camera.
-        frame = self.get_frame()
+        try:
+            frame = self.get_frame()
+        except RuntimeError as error:
+            raise RuntimeError from error
         # Detect humans in the frame.
         result = self._detect_humans(frame)
         return EyeStrategyResult(image=result.image, result=result.human_found)

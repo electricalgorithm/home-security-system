@@ -81,7 +81,12 @@ class EyeSubject(BaseSubject):
             wifi_lock = Lock()
 
         # Save an initial image.
-        initial_frame = eye_strategy.get_frame()
+        try:
+            initial_frame = eye_strategy.get_frame()
+        except RuntimeError as error:
+            logger.error(
+                "[EyeSubject] An error occurred while capturing the frame.")
+            raise RuntimeError from error
         file_location = f"{self._image_path}/initial_frame.jpg"
         cv2.imwrite(file_location, initial_frame)
         logger.debug("[EyeSubject] Initial frame has been saved.")
@@ -89,10 +94,17 @@ class EyeSubject(BaseSubject):
         while True:
             # If WiFi subject would give rights to use camera,
             # Check if any intruders detected.
-            logger.debug("[EyeSubject] WiFi Lock Status: %s", wifi_lock.locked())
+            logger.debug("[EyeSubject] WiFi Lock Status: %s",
+                         wifi_lock.locked())
             if not wifi_lock.locked():
-                result = eye_strategy.check_if_detected()
-                logger.debug("[EyeSubject] EyeStrategyResult: %s", str(result.result))
+                try:
+                    result = eye_strategy.check_if_detected()
+                except RuntimeError as error:
+                    logger.error(
+                        "[EyeSubject] An error occurred while checking if detected.")
+                    raise RuntimeError from error
+                logger.debug("[EyeSubject] EyeStrategyResult: %s",
+                             str(result.result))
 
                 if result.result:
                     logger.debug("[EyeSubject] Changing state to DETECTED...")
@@ -100,7 +112,8 @@ class EyeSubject(BaseSubject):
                     self.set_state(EyeStates.DETECTED)
                     sleep_interval = EyeSubject.SLEEP_INTERVAL_DETECTED
                 else:
-                    logger.debug("[EyeSubject] Changing state to NOT_DETECTED...")
+                    logger.debug(
+                        "[EyeSubject] Changing state to NOT_DETECTED...")
                     self.set_state(EyeStates.NOT_DETECTED)
                     sleep_interval = EyeSubject.DEFAULT_SLEEP_INTERVAL
 
