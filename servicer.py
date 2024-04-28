@@ -154,9 +154,10 @@ async def mem_info(message):
     """
     This method is called when the /meminfo command is sent.
     """
-    command = ["cat", "/proc/meminfo"]
     process = await asyncio.create_subprocess_shell(
-        command, stdout=asyncio.subprocess.PIPE)
+        "cat /proc/meminfo",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE)
     stdout, _ = await process.communicate()
     await SERVICER_BOT.reply_to(message, f"Memory Information: \n{stdout.decode()}")
 
