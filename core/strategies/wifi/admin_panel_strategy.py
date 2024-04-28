@@ -5,6 +5,7 @@ from typing import Any
 
 import requests
 from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
@@ -27,8 +28,9 @@ class AdminPanelStrategy(BaseWiFiStrategy):
         self._session: requests.Session = requests.Session()
 
         # Create a HTTP adapter to limit the number of connections.
+        retries = Retry(total=3, backoff_factor=0.3, backoff_max=5.0)
         http_adaptor: HTTPAdapter = HTTPAdapter(
-            pool_connections=1, max_retries=3
+            pool_connections=1, max_retries=retries
         )
         self._session.mount("http://", http_adaptor)
         self._session.mount("https://", http_adaptor)
