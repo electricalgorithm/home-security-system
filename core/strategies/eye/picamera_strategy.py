@@ -40,7 +40,7 @@ class PiCameraStrategy(BaseEyeStrategy):
         try:
             self._picam2.start()
             frame = self._picam2.capture_array()
-            self._picam2.close()
+            self._picam2.stop()
         except Exception as error:
             logger.error(
                 "An error occurred while capturing the frame: %s", error)
