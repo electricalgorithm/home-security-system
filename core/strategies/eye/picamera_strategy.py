@@ -20,6 +20,11 @@ class PiCameraStrategy(BaseEyeStrategy):
 
     def __init__(self):
         self._detector = None
+        self._picam2 = Picamera2()
+        still_configuration = self._picam2.create_still_configuration(
+            main={"format": 'YUV420'}
+        )
+        self._picam2.configure(still_configuration)
 
     # Interface methods.
     def set_detector(self, detector: BaseDetectorStrategy) -> None:
@@ -33,16 +38,9 @@ class PiCameraStrategy(BaseEyeStrategy):
     def get_frame(self) -> numpy.ndarray:
         """This method returns the frame from the camera."""
         try:
-            # Internal attributes
-            picam2 = Picamera2()
-            still_configuration = picam2.create_still_configuration(
-                main={"format": 'YUV420'})
-            picam2.configure(still_configuration)
-            picam2.start()
-            frame = picam2.capture_array()
-            picam2.stop()
-            picam2.close()
-            del picam2
+            self._picam2.start()
+            frame = self._picam2.capture_array()
+            self._picam2.close()
         except Exception as error:
             logger.error(
                 "An error occurred while capturing the frame: %s", error)
