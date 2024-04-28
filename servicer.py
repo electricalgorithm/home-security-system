@@ -37,7 +37,8 @@ def read_configurations() -> tuple[dict[str, Any], dict[str, Any]]:
 
 # Definitations
 MAIN_CONIGS, STRATEGY_CONFIGS = read_configurations()
-SERVICER_BOT = AsyncTeleBot(token=STRATEGY_CONFIGS["telegram_strategy"]["bot_key"])
+SERVICER_BOT = AsyncTeleBot(
+    token=STRATEGY_CONFIGS["telegram_strategy"]["bot_key"])
 KNOWN_LOG_LOCATIONS: dict[str, str] = {
     "hss.service": "/home/raspberry/.home-security-system/logs/hss.log"
 }
@@ -57,6 +58,7 @@ async def info(message):
                                 "/logs hss.service:N - provides the latest N logs.\n"
                                 "/inhouse - provides if protectors are in house, and whose.\n"
                                 "/imageshot - captures an image and sends.\n"
+                                "/meminfo - provides the memory information.\n"
                                 "/reboot - reboots the hardware.\n"
                                 "/shell echo 'test'- provides a shell access to the hardware.\n"
                                 "/info, /help, /hi - this help text.\n")
@@ -145,6 +147,18 @@ async def image_shot(message):
         return
     await SERVICER_BOT.send_photo(message.chat.id, encoded_frame.tobytes())
     del frame, encoded_frame
+
+
+@SERVICER_BOT.message_handler(commands=['meminfo'])
+async def mem_info(message):
+    """
+    This method is called when the /meminfo command is sent.
+    """
+    command = ["cat", "/proc/meminfo"]
+    process = await asyncio.create_subprocess_shell(
+        command, stdout=asyncio.subprocess.PIPE)
+    stdout, _ = await process.communicate()
+    await SERVICER_BOT.reply_to(message, f"Memory Information: \n{stdout.decode()}")
 
 
 @SERVICER_BOT.message_handler(commands=['reboot'])
