@@ -43,5 +43,96 @@ Create a `.config.json` file in the root directory with the following content:
 }
 ```
 
+### System Design
+
+```mermaid
+---
+title: Smart Security System UML Diagram
+---
+
+classDiagram
+
+    class IDetectorStrategy {
+        <<interface>>
+        + detect_humans(ndarry) bool
+    }
+
+    IDetectorStrategy <|-- EfficientDetStrategy
+    IDetectorStrategy <|-- HOGDescriptorStrategy
+
+    class IEyeStrategy {
+        <<interface>>
+        + set_detector(IDetectorStrategy): void
+        + get_detector() IDetectorStrategy
+        + get_frame() ndarray
+        + check_if_detected() bool
+        - detect_humans() DetectorResults
+    }
+
+    IEyeStrategy <|-- PiCameraStrategy
+    IEyeStrategy <|-- USBCameraStrategy
+    IEyeStrategy *-- IDetectorStrategy
+
+    class INotifierStrategy {
+        <<interface>>
+        - recievers
+        + add_receiver(NotifierReciever) void
+        + notify_all(String) void
+    }
+
+    INotifierStrategy <|-- WhatsAppStrategy
+    INotifierStrategy <|-- TelegramStrategy
+
+    class IWifiStrategy {
+        <<interface>>
+        - protectors
+        + add_protector(Protector) void
+        + remove_protector(Protector) void
+        + check_protectors() WiFiStrategyResult
+    }
+
+    IWifiStrategy <|-- AdminPanelStrategy
+    IWifiStrategy <|-- IpAddressStrategy
+    IWifiStrategy <|-- MacAddressStrategy
+
+
+    class ISubject {
+        <<interface>>
+        - observers: List[IObserver]
+        - current_state: ObserverStates
+        + attach(IObserver) void
+        + detach(IObserver) void
+        + notify() void
+        + get_state() ObserverStates
+        + set_state(ObserverStates)
+        + get_default_state() ObserverStates
+        + run() void
+    }
+
+    ISubject <|-- EyeSubject
+    ISubject <|-- WifiSubject
+
+    EyeSubject *-- IEyeStrategy
+    WifiSubject *-- IWifiStrategy
+
+    class IObserver {
+        <<interface>>
+        + update(ISubject)
+    }
+
+    class HSSObserver {
+        + wifi_state: ObserverStates
+        + eye_state: ObserverStates
+        - notifier: INotifierStrategy
+        + update(ISubject) void
+        + set_notifier(INotifierStrategy) void
+    }
+
+    IObserver <|-- HSSObserver
+    HSSObserver *-- INotifierStrategy
+
+    ISubject "1" o--> "1..*" IObserver
+```
+
 ### Advice
 You can use service file provided to run the script with systemd. It would make it run on startup, and restart it if it crashes.
