@@ -45,5 +45,4 @@ class PiCameraStrategy(BaseEyeStrategy):
             logger.error(
                 "An error occurred while capturing the frame: %s", error)
             raise RuntimeError from error
-        return cv2.rotate(frame,
-                          cv2.ROTATE_90_COUNTERCLOCKWISE)
+        return frame

@@ -5,7 +5,7 @@ import subprocess
 from enum import Enum
 
 
-class ICommand(Enum, str):
+class ICommand(str, Enum):
     """Interface for program commands."""
 
 
@@ -15,6 +15,8 @@ class ArpScanCommands(ICommand):
     INSTALL_PROGRAM = "sudo apt-get install arp-scan"
     GET_CONNECTED_MAC_ADDRESSES = "sudo arp-scan --localnet "\
         "| grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'"
+    GET_CONNECTED_IP_ADDRESSES = "sudo arp-scan --localnet "\
+        "| grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}'"
 
 
 class PingCommands(ICommand):

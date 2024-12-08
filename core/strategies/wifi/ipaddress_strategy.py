@@ -2,9 +2,9 @@
 The strategy which searches for IP addresses.
 """
 from core.strategies.wifi.base_wifi_strategy import BaseWiFiStrategy
-from core.utils.datatypes import WiFiStrategyResult
+from core.utils.datatypes import ConnectedDeviceResult, WiFiStrategyResult
 from core.utils.logger import get_logger
-from core.utils.program_launcher import PingCommands, run_program
+from core.utils.program_launcher import ArpScanCommands, PingCommands, run_program
 
 # Add logging support.
 logger = get_logger(__name__)
@@ -37,3 +37,12 @@ class IpAddressStrategy(BaseWiFiStrategy):
                 return WiFiStrategyResult(protector, True)
         logger.debug("No protectors found.")
         return WiFiStrategyResult(None, False)
+
+    # Internal methods
+    def _get_all_connected(self) -> list[ConnectedDeviceResult]:
+        """This method returns a list of addresses of the clients connected to the network."""
+        output = run_program(ArpScanCommands.GET_CONNECTED_IP_ADDRESSES)
+        ip_addrs = output.split('\n')
+        ip_addrs = ip_addrs[:-1]
+        logger.debug("Connected devices: %s", str(ip_addrs))
+        return [ConnectedDeviceResult(mac_addr.upper()) for mac_addr in ip_addrs]

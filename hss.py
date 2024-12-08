@@ -14,7 +14,7 @@ from core.strategies.detectors.efficientdet_strategy import EfficientdetStrategy
 from core.strategies.eye.picamera_strategy import PiCameraStrategy
 from core.strategies.notifier.telegram_strategy import TelegramStrategy
 from core.strategies.notifier.whatsapp_strategy import WhatsappStrategy
-from core.strategies.wifi.admin_panel_strategy import AdminPanelStrategy
+from core.strategies.wifi.ipaddress_strategy import IpAddressStrategy
 from core.utils.datatypes import Protector, TelegramReciever
 from core.utils.fileio_adaptor import upload_to_fileio
 
@@ -44,7 +44,7 @@ def main():
                                                reciever['chat_id']))
 
     # Create a Protector within IpAddressStrategy.
-    network_strategy = AdminPanelStrategy(strategy_config['admin_panel_strategy'])
+    network_strategy = IpAddressStrategy()
     for protector in config['protectors']:
         network_strategy.add_protector(Protector(protector['name'],
                                                  protector['address']))
